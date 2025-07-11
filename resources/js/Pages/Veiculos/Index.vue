@@ -8,6 +8,8 @@
           <th class="border border-gray-300 px-4 py-2">Ano</th>
           <th class="border border-gray-300 px-4 py-2">Placa</th>
           <th class="border border-gray-300 px-4 py-2">Renavam</th>
+          <th class="border border-gray-300 px-4 py-2">Data de aquisição</th>
+          <th class="border border-gray-300 px-4 py-2">Kilometragem de aquisicao</th>
         </tr>
       </thead>
       <tbody>
@@ -16,6 +18,8 @@
           <td class="border border-gray-300 px-4 py-2">{{ veiculo.ano }}</td>
           <td class="border border-gray-300 px-4 py-2">{{ veiculo.placa }}</td>
           <td class="border border-gray-300 px-4 py-2">{{ veiculo.renavam }}</td>
+          <td class="border border-gray-300 px-4 py-2">{{ veiculo.data_aquisicao }}</td>
+          <td class="border border-gray-300 px-4 py-2">{{ veiculo.km_aquisicao }}</td>
         </tr>
       </tbody>
     </table>
