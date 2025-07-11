@@ -13,7 +13,14 @@ return new class extends Migration
     {
         Schema::create('veiculos', function (Blueprint $table) {
             $table->id();
+            $table->string('modelo');
+            $table->year('ano');
+            $table->date('data_aquisicao');
+            $table->integer('km_aquisicao');
+            $table->string('renavam')->unique();
+            $table->string('placa')->unique();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
