@@ -4,8 +4,21 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Motorista extends Model
 {
-    use HasFactory;
+    use SoftDeletes, HasFactory;
+
+    protected $table = 'motoristas';
+
+    protected $fillable = [
+        'nome',
+        'data_nascimento',
+        'cnh',
+    ];
+
+    protected $casts = [
+        'data_nascimento' => 'date',
+    ];
 }
