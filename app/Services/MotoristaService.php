@@ -28,20 +28,24 @@ class MotoristaService
     public function store(array $data)
     {
         $validator = Validator::make($data, [
-            
+            'nome' => ['required', 'string', 'max:255'],
+            'data_nascimento' => ['required', 'date'],
+            'cnh' => ['required', 'digits:11', 'unique:motoristas,cnh'],
         ]);
 
         $validator->validate();
 
         $data['data_nascimento'] = Carbon::parse($data['data_nascimento'])->format('Y-m-d');
-        
+
         return $this->repository->create($data);
     }
 
     public function update($id, array $data)
     {
         $validator = Validator::make($data, [
-            
+            'nome' => ['required', 'string', 'max:255'],
+            'data_nascimento' => ['required', 'date'],
+            'cnh' => ['required', 'digits:11', 'unique:motoristas,cnh'. $id] 
         ]);
 
         $validator->validate();
