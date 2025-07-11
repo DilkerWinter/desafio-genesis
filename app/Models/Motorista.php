@@ -18,7 +18,4 @@ class Motorista extends Model
         'cnh',
     ];
 
-    protected $casts = [
-        'data_nascimento' => 'date',
-    ];
 }

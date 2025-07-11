@@ -2,13 +2,13 @@
 
 namespace App\Repositories;
 
-use App\Models\Veiculo;
+use App\Models\Motorista;
 
-class VeiculoRepository
+class MotoristaRepository
 {
     public function getModel()
     {
-        return Veiculo::class;
+        return Motorista::class;
     }
 
     public function all()

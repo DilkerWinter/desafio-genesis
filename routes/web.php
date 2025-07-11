@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MotoristaController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VeiculoController;
 use Illuminate\Foundation\Application;
@@ -27,7 +28,7 @@ Route::middleware('auth')->group(function () {
 
 //Cria todas as Rotas do VeiculoController Ex: Index, Show, Create, Store, Edit, Update e Destroy
 Route::resource('veiculos', VeiculoController::class);
-
+Route::resource('motoristas', MotoristaController::class);
 
 
 require __DIR__.'/auth.php';

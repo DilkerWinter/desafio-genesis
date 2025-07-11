@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Repositories\VeiculoRepository;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 
 class VeiculoService
@@ -37,6 +38,8 @@ class VeiculoService
 
         $validator->validate();
 
+        $data['data_aquisicao'] = Carbon::parse($data['data_aquisicao'])->format('Y-m-d');
+        
         return $this->repository->create($data);
     }
 
