@@ -22,7 +22,6 @@ class Veiculo extends Model
     ];
 
     protected $casts = [
-        'data_aquisicao' => 'date',
         'ano' => 'integer',
         'km_aquisicao' => 'integer',
     ];
