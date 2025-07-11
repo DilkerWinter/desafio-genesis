@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Repositories\VeiculoRepository;
+use Illuminate\Support\Facades\Validator;
 
 class VeiculoService
 {
@@ -25,11 +26,33 @@ class VeiculoService
 
     public function store(array $data)
     {
+        $validator = Validator::make($data, [
+            'modelo' => ['required', 'string', 'max:255'],
+            'ano' => ['required', 'digits:4', 'integer', 'min:1900', 'max:' . date('Y')],
+            'data_aquisicao' => ['required', 'date'],
+            'km_aquisicao' => ['required', 'integer', 'min:0'],
+            'renavam' => ['required', 'string', 'size:11', 'unique:veiculos,renavam'],
+            'placa' => ['required', 'string', 'regex:/^[A-Z]{3}[0-9][A-Z]{2}[0-9]$/', 'max:10', 'unique:veiculos,placa'],
+        ]);
+
+        $validator->validate();
+
         return $this->repository->create($data);
     }
 
     public function update($id, array $data)
     {
+        $validator = Validator::make($data, [
+            'modelo' => ['required', 'string', 'max:255'],
+            'ano' => ['required', 'digits:4', 'integer', 'min:1900', 'max:' . date('Y')],
+            'data_aquisicao' => ['required', 'date'],
+            'km_aquisicao' => ['required', 'integer', 'min:0'],
+            'renavam' => 'required|digits:11|unique:veiculos,renavam,' . $id,
+            'placa' => 'required|regex:/^[A-Z]{3}[0-9][A-Z]{2}[0-9]$/|unique:veiculos,placa,' . $id,
+        ]);
+
+        $validator->validate();
+
         return $this->repository->update($id, $data);
     }
 
