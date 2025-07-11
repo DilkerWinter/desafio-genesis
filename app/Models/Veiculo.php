@@ -3,8 +3,26 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Veiculo extends Model
 {
-    //
+    use SoftDeletes;
+
+    protected $table = 'veiculos';
+
+    protected $fillable = [
+        'modelo',
+        'ano',
+        'data_aquisicao',
+        'km_aquisicao',
+        'renavam',
+        'placa',
+    ];
+
+    protected $casts = [
+        'data_aquisicao' => 'date',
+        'ano' => 'integer',
+        'km_aquisicao' => 'integer',
+    ];
 }
