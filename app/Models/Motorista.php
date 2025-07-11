@@ -18,4 +18,8 @@ class Motorista extends Model
         'cnh',
     ];
 
+    public function viagens()
+    {
+        return $this->hasMany(Viagem::class);
+    }
 }

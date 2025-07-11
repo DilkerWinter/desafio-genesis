@@ -25,4 +25,9 @@ class Veiculo extends Model
         'ano' => 'integer',
         'km_aquisicao' => 'integer',
     ];
+
+    public function viagens()
+    {
+        return $this->hasMany(Viagem::class);
+    }
 }
