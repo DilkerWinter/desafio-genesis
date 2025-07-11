@@ -32,7 +32,7 @@ class VeiculoController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Veiculos/Create');
     }
 
     /**
@@ -40,15 +40,19 @@ class VeiculoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->veiculoService->store($request->all());
+
+        return redirect()->route('veiculos.index')->with('success', 'Veículo criado com sucesso!');
     }
+
 
     /**
      * Display the specified resource.
      */
     public function show(string $id)
     {
-        //
+        $veiculo = $this->veiculoService->show($id);
+        return Inertia::render('Veiculos/Show', ['veiculo' => $veiculo]);
     }
 
     /**
@@ -56,7 +60,8 @@ class VeiculoController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $veiculo = $this->veiculoService->show($id);
+        return Inertia::render('Veiculos/Edit', ['veiculo' => $veiculo]);
     }
 
     /**
@@ -64,7 +69,10 @@ class VeiculoController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $this->veiculoService->update($id, $request->all());
+
+        return redirect()->route('veiculos.show', $id)
+            ->with('success', 'Veículo atualizado com sucesso!');
     }
 
     /**
@@ -72,6 +80,9 @@ class VeiculoController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $this->veiculoService->destroy($id);
+
+        return redirect()->route('veiculos.index')
+            ->with('success', 'Veículo excluído com sucesso!');
     }
 }
