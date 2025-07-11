@@ -3,35 +3,39 @@
 namespace App\Repositories;
 
 use App\Models\Veiculo;
-use App\Repositories\Interfaces\VeiculoRepositoryInterface;
 
-class VeiculoRepository implements VeiculoRepositoryInterface
+class VeiculoRepository
 {
+    public function getModel()
+    {
+        return Veiculo::class;
+    }
+
     public function all()
     {
-        return Veiculo::all();
+        return $this->getModel()::all();
     }
 
     public function find($id)
     {
-        return Veiculo::findOrFail($id);
+        return $this->getModel()::findOrFail($id);
     }
 
     public function create(array $data)
     {
-        return Veiculo::create($data);
+        return $this->getModel()::create($data);
     }
 
     public function update($id, array $data)
     {
-        $veiculo = Veiculo::findOrFail($id);
+        $veiculo = $this->getModel()::findOrFail($id);
         $veiculo->update($data);
         return $veiculo;
     }
 
     public function delete($id)
     {
-        $veiculo = Veiculo::findOrFail($id);
+        $veiculo = $this->getModel()::findOrFail($id);
         return $veiculo->delete();
     }
 }

@@ -2,16 +2,29 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\VeiculoService;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class VeiculoController extends Controller
 {
+    protected $veiculoService;
+
+    public function __construct(VeiculoService $veiculoService)
+    {
+        $this->veiculoService = $veiculoService;
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        $veiculos = $this->veiculoService->index();
+
+        return Inertia::render('Veiculos/Index', [
+            'veiculos' => $veiculos,
+        ]);
     }
 
     /**
