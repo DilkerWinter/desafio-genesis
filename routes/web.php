@@ -3,6 +3,8 @@
 use App\Http\Controllers\MotoristaController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VeiculoController;
+use App\Http\Controllers\ViagemController;
+use App\Models\Viagem;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -26,9 +28,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-//Cria todas as Rotas do VeiculoController Ex: Index, Show, Create, Store, Edit, Update e Destroy
+//Cria todas as Rotas dos Controllers Ex: Index, Show, Create, Store, Edit, Update e Destroy
 Route::resource('veiculos', VeiculoController::class);
 Route::resource('motoristas', MotoristaController::class);
+Route::resource('viagens', ViagemController::class);
 
 
 require __DIR__.'/auth.php';
