@@ -36,7 +36,7 @@ jobs:
         run: npm run build
 
       - name: 🐳 Subir containers do docker-compose
-        run: docker-compose up -d
+        run: docker compose up -d
 
       - name: 🗄 Setup Laravel environment
         run: |
