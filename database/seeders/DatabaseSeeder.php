@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             VeiculoSeeder::class,
             MotoristaSeeder::class,
+            ViagemSeeder::class,
         ]);
     }
 }
