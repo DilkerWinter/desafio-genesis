@@ -49,13 +49,18 @@ jobs:
           echo "DB_USERNAME=postgres" >> .env
           echo "DB_PASSWORD=postgres" >> .env
 
-      - name: ⏱️ Esperar banco de dados ficar disponível
+      - name: ⏱️ Esperar o banco de dados estar pronto
         run: |
+          echo "Esperando o PostgreSQL iniciar..."
           for i in {1..30}; do
-            nc -z 127.0.0.1 5432 && echo "Postgres is up!" && break
-            echo "Waiting for Postgres..."
+            if docker exec entrevista_postgres pg_isready -U postgres; then
+              echo "PostgreSQL está pronto!"
+              break
+            fi
+            echo "Aguardando PostgreSQL..."
             sleep 2
           done
+      
 
       - name: 🔄 Run migrations
         run: php artisan migrate --force
