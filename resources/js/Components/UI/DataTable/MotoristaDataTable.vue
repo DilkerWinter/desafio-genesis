@@ -31,7 +31,7 @@
                         class="w-[30%] border text-center border-gray-300 px-4 py-2"
                     >
                         <template v-if="editandoId === motorista.id">
-                            <TextInput
+                            <InputField
                                 type="text"
                                 v-model="editarMotorista.nome"
                                 @blur="validateNome"
@@ -52,7 +52,7 @@
                         class="w-[30%] border text-center border-gray-300 px-4 py-2"
                     >
                         <template v-if="editandoId === motorista.id">
-                            <TextInput
+                            <InputField
                                 type="date"
                                 v-model="editarMotorista.data_nascimento"
                                 @blur="validateDataNascimento"
@@ -73,7 +73,7 @@
                         class="w-[30%] border text-center border-gray-300 px-4 py-2"
                     >
                         <template v-if="editandoId === motorista.id">
-                            <TextInput
+                            <InputField
                                 type="text"
                                 v-model="editarMotorista.cnh"
                                 @blur="validateCnh"
@@ -159,8 +159,8 @@ import { router } from "@inertiajs/vue3";
 import { reactive, ref, computed } from "vue";
 import CancelButton from "../Buttons/CancelButton.vue";
 import SalvarButton from "../Buttons/SaveButton.vue";
-import TextInput from "@/Components/TextInput.vue";
 import ConfirmModal from "../Modal/ConfirmModal.vue";
+import InputField from "../Inputs/InputField.vue";
 
 defineProps({
     motoristas: Object,
