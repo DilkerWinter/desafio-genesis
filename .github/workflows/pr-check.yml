@@ -11,34 +11,34 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 🔄 Checkout repository
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: 🧰 Setup PHP
+      - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: 8.3
           extensions: pdo_pgsql
           coverage: none
 
-      - name: ⚙️ Setup Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 20
 
-      - name: 📦 Install PHP dependencies
+      - name: Install PHP dependencies
         run: composer install --no-progress --prefer-dist
 
-      - name: 📦 Install NPM dependencies
+      - name: Install NPM dependencies
         run: npm ci
 
-      - name: 🛠 Build frontend
+      - name: Build frontend
         run: npm run build
 
-      - name: 🐳 Subir containers do docker-compose
+      - name: Subir containers do docker-compose
         run: docker compose up -d
 
-      - name: 🗄 Setup Laravel environment
+      - name: Setup Laravel environment
         run: |
           cp .env.example .env
           php artisan key:generate
@@ -49,7 +49,7 @@ jobs:
           echo "DB_USERNAME=postgres" >> .env
           echo "DB_PASSWORD=postgres" >> .env
 
-      - name: ⏱️ Esperar o banco de dados estar pronto
+      - name: Esperar o banco de dados estar pronto
         run: |
           echo "Esperando o PostgreSQL iniciar..."
           for i in {1..30}; do
@@ -62,8 +62,8 @@ jobs:
           done
       
 
-      - name: 🔄 Run migrations
+      - name: Run migrations
         run: php artisan migrate --force
 
-      - name: ✅ Run PHPUnit tests
+      - name: Run PHPUnit tests
         run: php artisan test

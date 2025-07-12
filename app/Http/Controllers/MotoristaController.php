@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Services\MotoristaService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\DataTables\MotoristaDataTable;
 
 class MotoristaController extends Controller
 {
@@ -18,12 +19,13 @@ class MotoristaController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request, MotoristaDataTable $dataTable)
     {
-        $motoristas = $this->motoristaService->index();
+        $motoristas = $dataTable->getTableData($request->all());
 
         return Inertia::render('Motoristas/Index', [
             'motoristas' => $motoristas,
+            'filters' => $request->only(['search', 'sortKey', 'sortOrder', 'perPage', 'page']),
         ]);
     }
 
@@ -71,7 +73,7 @@ class MotoristaController extends Controller
     {
         $this->motoristaService->update($id, $request->all());
 
-        return redirect()->route('motoristas.show', $id)
+        return redirect()->route('motoristas.index')
             ->with('success', 'Motorista atualizado com sucesso!');
     }
 

@@ -1,27 +1,33 @@
 <template>
-  <div>
-    <h1 class="text-2xl font-bold mb-4">Lista de Motoristas</h1>
-    <table class="table-auto w-full border-collapse border border-gray-300">
-      <thead>
-        <tr>
-          <th class="border border-gray-300 px-4 py-2">Nome</th>
-          <th class="border border-gray-300 px-4 py-2">Data Nascimento</th>
-          <th class="border border-gray-300 px-4 py-2">Numero CNH</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="motorista in motoristas" :key="motorista.id" class="hover:bg-gray-100">
-          <td class="border border-gray-300 px-4 py-2">{{ motorista.nome }}</td>
-          <td class="border border-gray-300 px-4 py-2">{{ motorista.data_nascimento }}</td>
-          <td class="border border-gray-300 px-4 py-2">{{ motorista.cnh }}</td>
-        </tr>
-      </tbody>
-    </table>
+  <div class="p-6 bg-gray-100 min-h-screen">
+    <div class="max-w-6xl mx-auto">
+
+      <div
+        class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 text-center sm:text-left p-4 bg-white rounded-lg shadow"
+      >
+        <h1 class="text-3xl font-semibold mb-4 sm:mb-0">Painel dos Motoristas</h1>
+        <button
+          class="bg-blue-600 text-white px-6 py-2.5 rounded-lg shadow hover:bg-blue-700 transition"
+        >
+          Cadastrar novo motorista
+        </button>
+      </div>
+
+      <div>
+        <MotoristaDataTable :motoristas="motoristas" />
+      </div>
+
+    </div>
   </div>
 </template>
 
 <script setup>
+import MotoristaDataTable from '@/Components/UI/DataTable/MotoristaDataTable.vue';
+
 defineProps({
-  motoristas: Array
+  motoristas: {
+    type: Object,
+    required: true,
+  },
 });
 </script>
