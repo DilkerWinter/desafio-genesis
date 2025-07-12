@@ -1,7 +1,7 @@
 <template>
     <div class="bg-white rounded-lg shadow p-4">
         <table
-            class="table-auto w-full border-separate border-spacing-0 rounded-lg border-2 border-blue-600"
+            class="table-auto w-full border-separate border-spacing-0 rounded-lg border border-blue-600"
         >
             <thead>
                 <tr>
@@ -45,7 +45,12 @@
                             </p>
                         </template>
                         <template v-else>
-                            {{ motorista.nome }}
+                            <a 
+                                @click.prevent="$inertia.visit(route('motoristas.show', motorista.id))"
+                                class="hover:underline cursor-pointer"
+                            >
+                                {{ motorista.nome }}
+                            </a>
                         </template>
                     </td>
                     <td
@@ -129,7 +134,7 @@
             </button>
         </div>
         <div class="mt-4 text-center text-gray-500">
-            {{ motoristas.total }} Páginas {{ motoristas.currentPage }} de
+            Páginas {{ motoristas.currentPage }} de
             {{ motoristas.lastPage }}
         </div>
     </div>
