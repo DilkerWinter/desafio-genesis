@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Repositories\MotoristaRepository;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class MotoristaService
 {
@@ -45,7 +46,7 @@ class MotoristaService
         $validator = Validator::make($data, [
             'nome' => ['required', 'string', 'max:255'],
             'data_nascimento' => ['required', 'date'],
-            'cnh' => ['required', 'digits:11', 'unique:motoristas,cnh'. $id] 
+            'cnh' => ['required', 'digits:11', Rule::unique('motoristas', 'cnh')->ignore($id)],
         ]);
 
         $validator->validate();
