@@ -1,0 +1,64 @@
+name: Build and Test on Pull Request
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🔄 Checkout repository
+        uses: actions/checkout@v3
+
+      - name: 🧰 Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.3
+          extensions: pdo_pgsql
+          coverage: none
+
+      - name: ⚙️ Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: 📦 Install PHP dependencies
+        run: composer install --no-progress --prefer-dist
+
+      - name: 📦 Install NPM dependencies
+        run: npm ci
+
+      - name: 🛠 Build frontend
+        run: npm run build
+
+      - name: 🐳 Subir containers do docker-compose
+        run: docker-compose up -d
+
+      - name: 🗄 Setup Laravel environment
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+          echo "DB_CONNECTION=pgsql" >> .env
+          echo "DB_HOST=127.0.0.1" >> .env
+          echo "DB_PORT=5432" >> .env
+          echo "DB_DATABASE=entrevista" >> .env
+          echo "DB_USERNAME=postgres" >> .env
+          echo "DB_PASSWORD=postgres" >> .env
+
+      - name: ⏱️ Esperar banco de dados ficar disponível
+        run: |
+          for i in {1..30}; do
+            nc -z 127.0.0.1 5432 && echo "Postgres is up!" && break
+            echo "Waiting for Postgres..."
+            sleep 2
+          done
+
+      - name: 🔄 Run migrations
+        run: php artisan migrate --force
+
+      - name: ✅ Run PHPUnit tests
+        run: php artisan test
