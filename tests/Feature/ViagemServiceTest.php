@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\DataTables\ViagemDataTable;
 use App\Models\Motorista;
 use App\Models\Veiculo;
 use App\Models\Viagem;
@@ -21,7 +22,10 @@ class ViagemServiceTest extends TestCase
     {
         parent::setUp();
 
-        $this->service = new ViagemService(new ViagemRepository());
+        $repository = new ViagemRepository();
+        $dataTable = new ViagemDataTable($repository);
+
+        $this->service = new ViagemService($repository, $dataTable);
     }
 
     /**
@@ -119,13 +123,28 @@ class ViagemServiceTest extends TestCase
     /**
      * @test
      */
-    public function deve_retornar_lista_de_viagens()
+    public function deve_retornar_datatable_de_viagens()
     {
         Viagem::factory()->count(5)->create();
 
-        $viagens = $this->service->index();
+        $params = [];  
+        $resultado = $this->service->index($params);
 
-        $this->assertCount(5, $viagens);
+        $this->assertArrayHasKey('data', $resultado);
+        $this->assertCount(5, $resultado['data']);
+
+        $this->assertArrayHasKey('id', $resultado['data'][0]);
+        $this->assertArrayHasKey('motorista', $resultado['data'][0]);
+        $this->assertArrayHasKey('veiculo', $resultado['data'][0]);
+        $this->assertArrayHasKey('km_inicial', $resultado['data'][0]);
+        $this->assertArrayHasKey('km_final', $resultado['data'][0]);
+
+        $this->assertArrayHasKey('total', $resultado);
+        $this->assertArrayHasKey('lastPage', $resultado);
+        $this->assertArrayHasKey('currentPage', $resultado);
+        $this->assertArrayHasKey('perPage', $resultado);
+
+        $this->assertEquals(5, $resultado['total']);
     }
 
     /**
