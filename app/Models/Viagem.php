@@ -28,6 +28,8 @@ class Viagem extends Model
         'data_hora_final' => 'datetime',
     ];
 
+    protected $appends = ['distancia_total', 'duracao_total'];
+
 
     public function motorista()
     {

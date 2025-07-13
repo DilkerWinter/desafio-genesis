@@ -20,7 +20,7 @@ class MotoristaController extends Controller
      */
     public function index(Request $request)
     {
-        $motoristas = $this->motoristaService->dataTable($request->all());
+        $motoristas = $this->motoristaService->index($request->all());
 
         return Inertia::render('Motoristas/Index', [
             'motoristas' => $motoristas,
@@ -86,4 +86,5 @@ class MotoristaController extends Controller
         return redirect()->route('motoristas.index')
             ->with('success', 'Motorista excluído com sucesso!');
     }
+
 }

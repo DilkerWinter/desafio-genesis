@@ -17,9 +17,9 @@ class ViagemService
         $this->dataTable = $dataTable;
     }
 
-    public function index()
+    public function index($params)
     {
-        return $this->repository->all();
+        return $this->dataTable->getTableData($params);
     }
 
     public function show($id)

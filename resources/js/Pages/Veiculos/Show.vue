@@ -12,7 +12,7 @@
                     @click="$inertia.visit(route('veiculos.index'))"
                     class="bg-gray-600 text-white px-6 py-2.5 rounded-lg shadow hover:bg-gray-700 transition"
                 >
-                    Voltar
+                    Lista de Veículos
                 </button>
             </div>
 
