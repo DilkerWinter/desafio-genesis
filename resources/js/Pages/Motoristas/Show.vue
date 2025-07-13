@@ -52,7 +52,7 @@
                 </div>
 
                 <div v-else class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-                    <ViagemCard
+                    <MotoristaViagemCard
                         v-for="(viagem, index) in motorista.viagens"
                         :key="index"
                         :viagem="viagem"
@@ -64,7 +64,7 @@
 </template>
 
 <script setup>
-import ViagemCard from "@/Components/UI/Card/ViagemCard.vue";
+import MotoristaViagemCard from "@/Components/UI/Card/MotoristaViagemCard.vue";
 import { defineProps } from "vue";
 
 const props = defineProps({

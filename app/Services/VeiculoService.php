@@ -33,13 +33,13 @@ class VeiculoService
             'data_aquisicao' => ['required', 'date'],
             'km_aquisicao' => ['required', 'integer', 'min:0'],
             'renavam' => ['required', 'string', 'size:11', 'unique:veiculos,renavam'],
-            'placa' => ['required', 'string', 'regex:/^[A-Z]{3}[0-9][A-Z]{2}[0-9]$/', 'max:10', 'unique:veiculos,placa'],
+            'placa' => ['required', 'string', 'regex:/^[A-Z]{3}[0-9]{1}[A-Z]{1}[0-9]{2}$/', 'max:7', 'unique:veiculos,placa'],
         ]);
 
         $validator->validate();
 
         $data['data_aquisicao'] = Carbon::parse($data['data_aquisicao'])->format('Y-m-d');
-        
+
         return $this->repository->create($data);
     }
 
@@ -51,7 +51,7 @@ class VeiculoService
             'data_aquisicao' => ['required', 'date'],
             'km_aquisicao' => ['required', 'integer', 'min:0'],
             'renavam' => 'required|digits:11|unique:veiculos,renavam,' . $id,
-            'placa' => 'required|regex:/^[A-Z]{3}[0-9][A-Z]{2}[0-9]$/|unique:veiculos,placa,' . $id,
+            'placa' => ['required', 'string', 'regex:/^[A-Z]{3}[0-9]{1}[A-Z]{1}[0-9]{2}$/', 'max:7', 'unique:veiculos,placa,' . $id],
         ]);
 
         $validator->validate();

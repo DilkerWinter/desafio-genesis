@@ -25,7 +25,7 @@ class MotoristaController extends Controller
 
         return Inertia::render('Motoristas/Index', [
             'motoristas' => $motoristas,
-            'filters' => $request->only(['search', 'sortKey', 'sortOrder', 'perPage', 'page']),
+            'filters' => $request->only(['sortKey', 'sortOrder', 'perPage', 'page']),
         ]);
     }
 
