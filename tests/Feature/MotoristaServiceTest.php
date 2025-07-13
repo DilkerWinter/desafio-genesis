@@ -6,6 +6,7 @@ use App\DataTables\MotoristaDataTable;
 use App\Models\Motorista;
 use App\Repositories\MotoristaRepository;
 use App\Services\MotoristaService;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Validation\ValidationException;
 use Tests\TestCase;
@@ -75,7 +76,7 @@ class MotoristaServiceTest extends TestCase
         $this->assertDatabaseHas('motoristas', [
             'id' => $motorista->id,
             'nome' => 'Nome Atualizado',
-            'data_nascimento' => '1990-01-01',
+            'data_nascimento' => Carbon::parse('1990-01-01')->toDateTimeString(),
         ]);
     }
 
