@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Services\MotoristaService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use App\DataTables\MotoristaDataTable;
 
 class MotoristaController extends Controller
 {
@@ -19,9 +18,9 @@ class MotoristaController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request, MotoristaDataTable $dataTable)
+    public function index(Request $request)
     {
-        $motoristas = $dataTable->getTableData($request->all());
+        $motoristas = $this->motoristaService->dataTable($request->all());
 
         return Inertia::render('Motoristas/Index', [
             'motoristas' => $motoristas,

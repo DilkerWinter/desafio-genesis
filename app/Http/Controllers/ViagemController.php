@@ -18,12 +18,13 @@ class ViagemController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $viagens = $this->viagemService->index();
+        $viagens = $this->viagemService->dataTable($request->all());
 
         return Inertia::render('Viagens/Index', [
             'viagens' => $viagens,
+            'filters' => $request->only(['search', 'sortKey', 'sortOrder', 'perPage', 'page']),
         ]);
     }
 

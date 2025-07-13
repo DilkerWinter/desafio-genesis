@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\DataTables\VeiculoDataTable;
 use App\Repositories\VeiculoRepository;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
@@ -9,10 +10,12 @@ use Illuminate\Support\Facades\Validator;
 class VeiculoService
 {
     protected $repository;
+    protected $dataTable;
 
-    public function __construct(VeiculoRepository $repository)
+    public function __construct(VeiculoRepository $repository, VeiculoDataTable $dataTable)
     {
         $this->repository = $repository;
+        $this->dataTable = $dataTable;
     }
 
     public function index()
@@ -62,5 +65,13 @@ class VeiculoService
     public function destroy($id)
     {
         return $this->repository->delete($id);
+    }
+
+    /**
+     * Pega os dados da dataTable
+     */
+    public function dataTable(array $params): array
+    {
+        return $this->dataTable->getTableData($params);
     }
 }

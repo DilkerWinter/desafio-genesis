@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\DataTables\VeiculoDataTable;
 use App\Services\VeiculoService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -19,9 +18,9 @@ class VeiculoController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request, VeiculoDataTable $dataTable)
+    public function index(Request $request)
     {
-        $veiculos = $dataTable->getTableData($request->all());
+        $veiculos = $this->veiculoService->dataTable($request->all());
 
         return Inertia::render('Veiculos/Index', [
             'veiculos' => $veiculos,

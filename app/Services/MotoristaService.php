@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\DataTables\MotoristaDataTable;
 use App\Repositories\MotoristaRepository;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
@@ -10,10 +11,12 @@ use Illuminate\Validation\Rule;
 class MotoristaService
 {
     protected $repository;
+    protected $dataTable;
 
-    public function __construct(MotoristaRepository $repository)
+    public function __construct(MotoristaRepository $repository, MotoristaDataTable $dataTable)
     {
         $this->repository = $repository;
+        $this->dataTable = $dataTable;
     }
 
     public function index()
@@ -59,5 +62,13 @@ class MotoristaService
     public function destroy($id)
     {
         return $this->repository->delete($id);
+    }
+
+    /**
+     * Pega os dados da dataTable
+     */
+    public function dataTable(array $params): array
+    {
+        return $this->dataTable->getTableData($params);
     }
 }
