@@ -1,9 +1,20 @@
 <template>
   <div class="bg-white rounded-lg shadow p-4 border border-blue-600">
     <p>
-      <strong>Veículo:</strong>
-      {{ viagem.veiculo?.modelo ?? "Não informado" }}
+      <strong>Motorista: </strong>
+      <template v-if="viagem.motorista">
+        <a
+          @click.prevent="$inertia.visit(route('motoristas.show', viagem.motorista.id))"
+          class="hover:underline cursor-pointer"
+        >
+          {{ viagem.motorista.nome }}
+        </a>
+      </template>
+      <template v-else>
+        Não informado
+      </template>
     </p>
+
 
     <p>
       <strong>Quilometragem Inicial:</strong>

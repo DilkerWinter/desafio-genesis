@@ -2,14 +2,14 @@
 
 namespace App\DataTables;
 
-use App\Repositories\MotoristaRepository;
+use App\Repositories\VeiculoRepository;
 use Carbon\Carbon;
 
-class MotoristaDataTable
+class VeiculoDataTable
 {
     protected $repository;
 
-    public function __construct(MotoristaRepository $repository)
+    public function __construct(VeiculoRepository $repository)
     {
         $this->repository = $repository;
     }
@@ -21,12 +21,15 @@ class MotoristaDataTable
     {
         $data = $this->repository->searchAndPaginate($params);
 
-        $formattedData = $data->map(function ($motorista) {
+        $formattedData = $data->map(function ($veiculo) {
             return [
-                'id' => $motorista->id,
-                'nome' => $motorista->nome,
-                'data_nascimento' => $this->formatarData($motorista->data_nascimento),
-                'cnh' => $motorista->cnh,
+                'id' => $veiculo->id,
+                'modelo' => $veiculo->modelo,
+                'ano' => $veiculo->ano,
+                'data_aquisicao' => $this->formatarData($veiculo->data_aquisicao),
+                'km_aquisicao' => $veiculo->km_aquisicao,
+                'renavam' => $veiculo->renavam,
+                'placa' => $veiculo->placa,
             ];
         });
 
@@ -48,7 +51,7 @@ class MotoristaDataTable
         try {
             return Carbon::parse($data)->format('d/m/Y');
         } catch (\Exception $e) {
-            return $data; 
+            return $data;
         }
     }
 }

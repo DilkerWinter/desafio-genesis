@@ -24,7 +24,7 @@ class VeiculoFactory extends Factory
             'data_aquisicao' => $this->faker->dateTimeBetween('-5 years', 'now')->format('Y-m-d'),
             'km_aquisicao' => $this->faker->numberBetween(0, 200000),
             'renavam' => $this->faker->unique()->numerify('###########'),
-            'placa' => strtoupper($this->faker->regexify('[A-Z]{3}[0-9][A-Z]{2}[0-9]')),
+            'placa' => strtoupper($this->faker->regexify('[A-Z]{3}[0-9]{1}[A-Z]{1}[0-9]{2}')),
         ];
     }
 }

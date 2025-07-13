@@ -18,7 +18,7 @@ class VeiculoRepository
 
     public function find($id)
     {
-        return $this->getModel()::findOrFail($id);
+        return $this->getModel()::with(['viagens.motorista'])->findOrFail($id);
     }
 
     public function create(array $data)
@@ -37,5 +37,24 @@ class VeiculoRepository
     {
         $model = $this->getModel()::findOrFail($id);
         return $model->delete();
+    }
+
+    /**
+     * Retorna os dados para usar na DataTable
+     */
+    public function searchAndPaginate(array $params)
+    {
+        $perPage = data_get($params, 'perPage', 5);
+        $page = data_get($params, 'page', 1);
+        $sortKey = data_get($params, 'sortKey', 'id');
+        $sortOrder = data_get($params, 'sortOrder', 'asc');
+
+        $query = $this->getModel()::query();
+
+        if (in_array($sortKey, ['modelo', 'ano', 'data_aquisicao', 'km_aquisicao', 'renavam', 'placa'])) {
+            $query->orderBy($sortKey, $sortOrder);
+        }
+
+        return $query->paginate($perPage, ['*'], 'page', $page);
     }
 }

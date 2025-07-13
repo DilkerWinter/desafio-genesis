@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTables\VeiculoDataTable;
 use App\Services\VeiculoService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -18,12 +19,13 @@ class VeiculoController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request, VeiculoDataTable $dataTable)
     {
-        $veiculos = $this->veiculoService->index();
+        $veiculos = $dataTable->getTableData($request->all());
 
         return Inertia::render('Veiculos/Index', [
             'veiculos' => $veiculos,
+            'filters' => $request->only(['search', 'sortKey', 'sortOrder', 'perPage', 'page']),
         ]);
     }
 
@@ -71,7 +73,7 @@ class VeiculoController extends Controller
     {
         $this->veiculoService->update($id, $request->all());
 
-        return redirect()->route('veiculos.show', $id)
+        return redirect()->route('veiculos.index')
             ->with('success', 'Veículo atualizado com sucesso!');
     }
 
