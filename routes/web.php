@@ -4,6 +4,7 @@ use App\Http\Controllers\MotoristaController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VeiculoController;
 use App\Http\Controllers\ViagemController;
+use App\Models\Veiculo;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -27,9 +28,14 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+//Receber json de todos os Veiculos/Motoristas
+Route::get('/motoristas/list', [MotoristaController::class, 'list'])->name('motoristas.list');
+Route::get('/veiculos/list', [VeiculoController::class, 'list'])->name('veiculos.list');
+
 //Cria todas as Rotas dos Controllers Ex: Index, Show, Create, Store, Edit, Update e Destroy
 Route::resource('veiculos', VeiculoController::class);
 Route::resource('motoristas', MotoristaController::class);
 Route::resource('viagens', ViagemController::class);
+
 
 require __DIR__.'/auth.php';

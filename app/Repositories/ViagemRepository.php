@@ -13,12 +13,12 @@ class ViagemRepository
 
     public function all()
     {
-        return $this->getModel()::with(['motorista', 'veiculo'])->get();
+        return $this->getModel()::get();
     }
 
     public function find($id)
     {
-        return $this->getModel()::with(['motorista', 'veiculo'])->findOrFail($id);
+        return $this->getModel()::findOrFail($id);
     }
 
     public function create(array $data)
