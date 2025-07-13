@@ -16,9 +16,9 @@ return new class extends Migration
             $table->foreignId('motorista_id')->constrained()->onDelete('cascade');
             $table->foreignId('veiculo_id')->constrained()->onDelete('cascade');
             $table->integer('km_inicial');
-            $table->integer('km_final');
+            $table->integer('km_final')->nullable();
             $table->dateTime('data_hora_inicial');
-            $table->dateTime('data_hora_final');
+            $table->dateTime('data_hora_final')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

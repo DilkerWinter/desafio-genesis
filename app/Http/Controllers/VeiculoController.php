@@ -72,7 +72,7 @@ class VeiculoController extends Controller
     {
         $this->veiculoService->update($id, $request->all());
 
-        return redirect()->route('veiculos.index')
+        return redirect()->route('veiculos.show', $id)
             ->with('success', 'Veículo atualizado com sucesso!');
     }
 

@@ -54,8 +54,6 @@ class MotoristaService
 
         $validator->validate();
 
-        $data['data_nascimento'] = Carbon::parse($data['data_nascimento'])->format('Y-m-d');
-
         return $this->repository->update($id, $data);
     }
 

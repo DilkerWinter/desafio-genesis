@@ -18,6 +18,10 @@ class Motorista extends Model
         'cnh',
     ];
 
+    protected $casts = [
+        'data_nascimento' => 'date',
+    ];
+
     public function viagens()
     {
         return $this->hasMany(Viagem::class);

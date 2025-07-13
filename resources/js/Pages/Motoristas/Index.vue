@@ -43,9 +43,12 @@
             <p class="font-semibold">Data de Nascimento</p>
             <InputField
                 v-model="cadastroForm.data_nascimento"
-                type="date"
+                type="text"
+                placeholder="dd/mm/aaaa"
+                @input="mascararData('data_nascimento')"
                 @blur="validateDataNascimentoCadastro"
                 class="border rounded px-3 py-2 w-full"
+                maxlength="10"
             />
             <p
                 v-if="errorsCadastro.data_nascimento"
@@ -62,6 +65,7 @@
                 type="text"
                 @blur="validateCnhCadastro"
                 class="border rounded px-3 py-2 w-full"
+                placeholder="00000000000"
             />
             <p v-if="errorsCadastro.cnh" class="text-red-600 text-sm mt-1">
                 {{ errorsCadastro.cnh }}
@@ -100,16 +104,41 @@ function validateNomeCadastro() {
 }
 
 function validateDataNascimentoCadastro() {
-    if (!cadastroForm.data_nascimento) {
+    const dataStr = cadastroForm.data_nascimento;
+    if (!dataStr) {
         errorsCadastro.data_nascimento = "Data de nascimento é obrigatória.";
         return;
     }
-    const today = new Date();
-    const birthDate = new Date(cadastroForm.data_nascimento);
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const month = today.getMonth() - birthDate.getMonth();
 
-    if (month < 0 || (month === 0 && today.getDate() < birthDate.getDate())) {
+    const partes = dataStr.split("/");
+    if (partes.length !== 3) {
+        errorsCadastro.data_nascimento = "Formato da data inválido.";
+        return;
+    }
+
+    const dia = parseInt(partes[0], 10);
+    const mes = parseInt(partes[1], 10) - 1;
+    const ano = parseInt(partes[2], 10);
+
+    const birthDate = new Date(ano, mes, dia);
+
+    if (
+        birthDate.getFullYear() !== ano ||
+        birthDate.getMonth() !== mes ||
+        birthDate.getDate() !== dia
+    ) {
+        errorsCadastro.data_nascimento = "Data inválida.";
+        return;
+    }
+
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+
+    if (
+        monthDiff < 0 ||
+        (monthDiff === 0 && today.getDate() < birthDate.getDate())
+    ) {
         age--;
     }
 
@@ -127,6 +156,27 @@ function validateCnhCadastro() {
         errorsCadastro.cnh = "O número da CNH deve ter 11 dígitos.";
     } else {
         errorsCadastro.cnh = null;
+    }
+}
+
+function mascararData(campo) {
+    let valor = cadastroForm[campo].replace(/\D/g, "");
+
+    if (valor.length > 8) valor = valor.slice(0, 8);
+
+    if (valor.length >= 5) {
+        cadastroForm[campo] = `${valor.slice(0, 2)}/${valor.slice(
+            2,
+            4
+        )}/${valor.slice(4, 8)}`;
+    } else if (valor.length >= 3) {
+        cadastroForm[campo] = `${valor.slice(0, 2)}/${valor.slice(2, 4)}`;
+    } else {
+        cadastroForm[campo] = valor;
+    }
+
+    if (cadastroForm[campo].length > 10) {
+        cadastroForm[campo] = cadastroForm[campo].slice(0, 10);
     }
 }
 
@@ -151,10 +201,8 @@ function cadastrarMotorista() {
             cadastroForm.data_nascimento = "";
             cadastroForm.cnh = "";
             mostrarCadastro.value = false;
-
         },
     });
-
 }
 
 defineProps({

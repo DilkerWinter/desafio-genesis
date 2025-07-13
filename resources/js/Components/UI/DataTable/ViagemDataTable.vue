@@ -41,31 +41,41 @@
                     class="hover:bg-gray-100"
                 >
                     <td class="border text-center border-gray-300 px-4 py-2">
-                        <a
-                            @click.prevent="
-                                $inertia.visit(
-                                    route(
-                                        'motoristas.show',
-                                        viagem.motorista.id
+                        <template v-if="viagem.motorista">
+                            <a
+                                @click.prevent="
+                                    $inertia.visit(
+                                        route(
+                                            'motoristas.show',
+                                            viagem.motorista.id
+                                        )
                                     )
-                                )
-                            "
-                            class="hover:underline cursor-pointer"
-                        >
-                            {{ viagem.motorista.nome }}
-                        </a>
+                                "
+                                class="hover:underline cursor-pointer"
+                            >
+                                {{ viagem.motorista.nome }}
+                            </a>
+                        </template>
+                        <template v-else> Não informado </template>
                     </td>
+
                     <td class="border text-center border-gray-300 px-4 py-2">
-                        <a
-                            @click.prevent="
-                                $inertia.visit(
-                                    route('veiculos.show', viagem.veiculo.id)
-                                )
-                            "
-                            class="hover:underline cursor-pointer"
-                        >
-                            {{ viagem.veiculo.modelo }}
-                        </a>
+                        <template v-if="viagem.veiculo">
+                            <a
+                                @click.prevent="
+                                    $inertia.visit(
+                                        route(
+                                            'veiculos.show',
+                                            viagem.veiculo.id
+                                        )
+                                    )
+                                "
+                                class="hover:underline cursor-pointer"
+                            >
+                                {{ viagem.veiculo.modelo }}
+                            </a>
+                        </template>
+                        <template v-else> Não informado </template>
                     </td>
                     <td class="border text-center border-gray-300 px-4 py-2">
                         {{ viagem.km_inicial }}
