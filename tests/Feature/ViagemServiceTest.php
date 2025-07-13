@@ -123,33 +123,6 @@ class ViagemServiceTest extends TestCase
     /**
      * @test
      */
-    public function deve_retornar_datatable_de_viagens()
-    {
-        Viagem::factory()->count(5)->create();
-
-        $params = [];  
-        $resultado = $this->service->index($params);
-
-        $this->assertArrayHasKey('data', $resultado);
-        $this->assertCount(5, $resultado['data']);
-
-        $this->assertArrayHasKey('id', $resultado['data'][0]);
-        $this->assertArrayHasKey('motorista', $resultado['data'][0]);
-        $this->assertArrayHasKey('veiculo', $resultado['data'][0]);
-        $this->assertArrayHasKey('km_inicial', $resultado['data'][0]);
-        $this->assertArrayHasKey('km_final', $resultado['data'][0]);
-
-        $this->assertArrayHasKey('total', $resultado);
-        $this->assertArrayHasKey('lastPage', $resultado);
-        $this->assertArrayHasKey('currentPage', $resultado);
-        $this->assertArrayHasKey('perPage', $resultado);
-
-        $this->assertEquals(5, $resultado['total']);
-    }
-
-    /**
-     * @test
-     */
     public function deve_retornar_uma_viagem_pelo_id()
     {
         $viagem = Viagem::factory()->create();

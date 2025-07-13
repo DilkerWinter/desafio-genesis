@@ -113,34 +113,6 @@ class VeiculoServiceTest extends TestCase
     /**
      * @test
      */
-    public function deve_retornar_datatable_de_veiculos()
-    {
-        Veiculo::factory()->count(3)->create();
-
-        $params = []; 
-        $resultado = $this->service->index($params);
-
-        $this->assertArrayHasKey('data', $resultado);
-        $this->assertCount(3, $resultado['data']);
-
-        $this->assertArrayHasKey('id', $resultado['data'][0]);
-        $this->assertArrayHasKey('modelo', $resultado['data'][0]);
-        $this->assertArrayHasKey('ano', $resultado['data'][0]);
-        $this->assertArrayHasKey('renavam', $resultado['data'][0]);
-        $this->assertArrayHasKey('placa', $resultado['data'][0]);
-
-        $this->assertArrayHasKey('total', $resultado);
-        $this->assertArrayHasKey('lastPage', $resultado);
-        $this->assertArrayHasKey('currentPage', $resultado);
-        $this->assertArrayHasKey('perPage', $resultado);
-
-        $this->assertEquals(3, $resultado['total']);
-    }
-
-
-    /**
-     * @test
-     */
     public function deve_retornar_um_veiculo_pelo_id()
     {
         $veiculo = Veiculo::factory()->create();

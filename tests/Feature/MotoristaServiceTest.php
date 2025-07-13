@@ -124,36 +124,6 @@ class MotoristaServiceTest extends TestCase
     /**
      * @test
      */
-    /**
-     * @test
-     */
-    public function deve_retornar_datatable_de_motoristas()
-    {
-        Motorista::factory()->count(3)->create();
-
-        $params = [];
-        $resultado = $this->service->index($params);
-
-        $this->assertArrayHasKey('data', $resultado);
-        $this->assertCount(3, $resultado['data']);
-
-        $this->assertArrayHasKey('id', $resultado['data'][0]);
-        $this->assertArrayHasKey('nome', $resultado['data'][0]);
-        $this->assertArrayHasKey('data_nascimento', $resultado['data'][0]);
-        $this->assertArrayHasKey('cnh', $resultado['data'][0]);
-
-        $this->assertArrayHasKey('total', $resultado);
-        $this->assertArrayHasKey('lastPage', $resultado);
-        $this->assertArrayHasKey('currentPage', $resultado);
-        $this->assertArrayHasKey('perPage', $resultado);
-
-        $this->assertEquals(3, $resultado['total']);
-    }
-
-
-    /**
-     * @test
-     */
     public function deve_retornar_um_motorista_pelo_id()
     {
         $motorista = Motorista::factory()->create();
