@@ -166,6 +166,7 @@ import ViagemDataTable from "@/Components/UI/DataTable/ViagemDataTable.vue";
 import CadastroModal from "@/Components/UI/Modal/CadastroModal.vue";
 import InputField from "@/Components/UI/Inputs/InputField.vue";
 import InputChoose from "@/Components/UI/Inputs/InputChoose.vue";
+import { router } from "@inertiajs/vue3";
 
 const props = defineProps({
     viagens: {
@@ -230,7 +231,11 @@ function validarKmInicial() {
 }
 
 function validarKmFinal() {
-    if (form.value.km_final === "" || form.value.km_final === null || isNaN(form.value.km_final)) {
+    if (
+        form.value.km_final === "" ||
+        form.value.km_final === null ||
+        isNaN(form.value.km_final)
+    ) {
         delete errors.value.km_final;
         return;
     }
@@ -239,12 +244,12 @@ function validarKmFinal() {
     const final = parseInt(form.value.km_final);
 
     if (final <= inicial) {
-        errors.value.km_final = "Kilometragem final deve ser maior que a inicial.";
+        errors.value.km_final =
+            "Kilometragem final deve ser maior que a inicial.";
     } else {
         delete errors.value.km_final;
     }
 }
-
 
 const regexData = /^\d{2}\/\d{2}\/\d{4}$/;
 const regexHora = /^([0-1]\d|2[0-3]):([0-5]\d)$/;
@@ -252,7 +257,7 @@ const regexHora = /^([0-1]\d|2[0-3]):([0-5]\d)$/;
 function validarData(str) {
     if (!regexData.test(str)) return false;
 
-    const [diaStr, mesStr, anoStr] = str.split('/');
+    const [diaStr, mesStr, anoStr] = str.split("/");
     const dia = parseInt(diaStr, 10);
     const mes = parseInt(mesStr, 10);
     const ano = parseInt(anoStr, 10);
@@ -261,7 +266,7 @@ function validarData(str) {
 
     return (
         dateObj.getFullYear() === ano &&
-        dateObj.getMonth() === (mes - 1) &&
+        dateObj.getMonth() === mes - 1 &&
         dateObj.getDate() === dia
     );
 }
@@ -269,13 +274,14 @@ function validarData(str) {
 function validarHora(str) {
     if (!regexHora.test(str)) return false;
 
-    const [hh, mm] = str.split(':').map(Number);
+    const [hh, mm] = str.split(":").map(Number);
     return hh >= 0 && hh <= 23 && mm >= 0 && mm <= 59;
 }
 
 function validarDataInicial() {
     if (!form.value.data_inicial || !validarData(form.value.data_inicial)) {
-        errors.value.data_inicial = "Informe uma data inicial válida (dd/mm/aaaa).";
+        errors.value.data_inicial =
+            "Informe uma data inicial válida (dd/mm/aaaa).";
         return false;
     }
 
@@ -295,7 +301,8 @@ function validarHoraInicial() {
 
 function validarDataFinal() {
     if (form.value.hora_final && !form.value.data_final) {
-        errors.value.data_final = "Informe a data final se a hora final estiver preenchida.";
+        errors.value.data_final =
+            "Informe a data final se a hora final estiver preenchida.";
         return false;
     }
 
@@ -310,7 +317,8 @@ function validarDataFinal() {
 
 function validarHoraFinal() {
     if (form.value.data_final && !form.value.hora_final) {
-        errors.value.hora_final = "Informe a hora final se a data final estiver preenchida.";
+        errors.value.hora_final =
+            "Informe a hora final se a data final estiver preenchida.";
         return false;
     }
 
@@ -319,7 +327,11 @@ function validarHoraFinal() {
         return false;
     }
 
-    if (form.value.data_final === form.value.data_inicial && form.value.hora_final && form.value.hora_inicial) {
+    if (
+        form.value.data_final === form.value.data_inicial &&
+        form.value.hora_final &&
+        form.value.hora_inicial
+    ) {
         const [hIni, mIni] = form.value.hora_inicial.split(":").map(Number);
         const [hFin, mFin] = form.value.hora_final.split(":").map(Number);
 
@@ -327,7 +339,8 @@ function validarHoraFinal() {
         const minutosFinal = hFin * 60 + mFin;
 
         if (minutosFinal <= minutosInicial) {
-            errors.value.hora_final = "Hora final deve ser maior que hora inicial na mesma data.";
+            errors.value.hora_final =
+                "Hora final deve ser maior que hora inicial na mesma data.";
             return false;
         }
     }
@@ -372,6 +385,14 @@ const veiculosFormatados = computed(() =>
     }))
 );
 
+
+function converterParaISODateTime(dataBr, hora) {
+    const [dia, mes, ano] = dataBr.split("/");
+    const [hh, mm] = hora.split(":");
+
+    return `${ano}-${mes.padStart(2, "0")}-${dia.padStart(2, "0")}T${hh.padStart(2, "0")}:${mm.padStart(2, "0")}`;
+}
+
 function salvarViagem() {
     validarMotorista();
     validarVeiculo();
@@ -382,15 +403,53 @@ function salvarViagem() {
     validarHoraInicial();
     validarHoraFinal();
 
-     if (Object.keys(errors.value).length > 0) {
+    if (Object.keys(errors.value).length > 0) {
         return;
     }
 
-    console.log("Salvando viagem:", form.value);
-    mostrarCadastro.value = false;
-    form.value = {
-        motorista_id: "",
-        data: "",
+    const dataHoraInicial = converterParaISODateTime(
+        form.value.data_inicial,
+        form.value.hora_inicial
+    );
+
+    const dataHoraFinal =
+        form.value.data_final && form.value.hora_final
+            ? converterParaISODateTime(form.value.data_final, form.value.hora_final)
+            : null;
+
+    const payload = {
+        motorista_id: form.value.motorista_id,
+        veiculo_id: form.value.veiculo_id,
+        km_inicial: form.value.km_inicial,
+        km_final: form.value.km_final || null,
+        data_hora_inicial: dataHoraInicial,
+        data_hora_final: dataHoraFinal,
     };
+
+    router.post(route("viagens.store"), payload, {
+        onError: (e) => {
+            errors.value.motorista_id = e.motorista_id || null;
+            errors.value.veiculo_id = e.veiculo_id || null;
+            errors.value.km_inicial = e.km_inicial || null;
+            errors.value.km_final = e.km_final || null;
+            errors.value.data_inicial = e.data_hora_inicial || null;
+            errors.value.data_final = e.data_hora_final || null;
+        },
+        onSuccess: () => {
+            form.value = {
+                motorista_id: null,
+                veiculo_id: null,
+                km_inicial: "",
+                km_final: "",
+                data_inicial: "",
+                hora_inicial: "",
+                data_final: "",
+                hora_final: "",
+            };
+            mostrarCadastro.value = false;
+        },
+        
+    });
 }
+
 </script>

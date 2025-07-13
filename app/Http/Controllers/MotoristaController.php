@@ -72,7 +72,7 @@ class MotoristaController extends Controller
     {
         $this->motoristaService->update($id, $request->all());
 
-        return redirect()->route('motoristas.index')
+        return redirect()->route('motoristas.show', $id)
             ->with('success', 'Motorista atualizado com sucesso!');
     }
 

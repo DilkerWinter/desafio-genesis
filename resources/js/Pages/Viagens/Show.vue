@@ -27,33 +27,26 @@
                     <div>
                         <p class="font-semibold">Motorista</p>
                         <a
-                            @click.prevent="
-                                $inertia.visit(
-                                    route(
-                                        'motoristas.show',
-                                        viagem.motorista.id
-                                    )
-                                )
-                            "
+                            v-if="viagem.motorista"
+                            @click.prevent="$inertia.visit(route('motoristas.show', viagem.motorista.id))"
                             class="hover:underline cursor-pointer"
                         >
                             {{ viagem.motorista.nome }}
                         </a>
+                        <p v-else>não informado</p>
+
                     </div>
                     <div>
                         <p class="font-semibold">Veículo</p>
                         <a
-                            @click.prevent="
-                                $inertia.visit(
-                                    route('veiculos.show', viagem.veiculo.id)
-                                )
-                            "
+                            v-if="viagem.veiculo"
+                            @click.prevent="$inertia.visit(route('veiculos.show', viagem.veiculo.id))"
                             class="hover:underline cursor-pointer"
                         >
-                            {{ viagem.veiculo.modelo }} ({{
-                                viagem.veiculo.placa
-                            }})
+                            {{ viagem.veiculo.modelo }} ({{ viagem.veiculo.placa }})
                         </a>
+                        <p v-else>não informado</p>
+
                     </div>
                     <div>
                         <p class="font-semibold">Kilometragem do Veiculo Inicial</p>
