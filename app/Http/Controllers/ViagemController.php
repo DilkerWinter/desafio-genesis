@@ -14,7 +14,7 @@ class ViagemController extends Controller
     protected $motoristaService;
     protected $veiculoService;
 
-    public function __construct(ViagemService $viagemService, MotoristaService $motoristaService,VeiculoService $veiculoService)
+    public function __construct(ViagemService $viagemService, MotoristaService $motoristaService, VeiculoService $veiculoService)
     {
         $this->viagemService = $viagemService;
         $this->motoristaService = $motoristaService;
@@ -25,7 +25,7 @@ class ViagemController extends Controller
      * Display a listing of the resource.
      */
     public function index(Request $request)
-    {   
+    {
         //Sei que nao e tao performatico, ate daria pra adicionar um Redis 
         //com cache caso tenha uma quantidade enorme de Motoristas/Veiculos
         //mas partindo do principio que Motoristas seriam funcinarios da empresa
@@ -70,7 +70,14 @@ class ViagemController extends Controller
     public function show(string $id)
     {
         $viagem = $this->viagemService->show($id);
-        return Inertia::render('Viagens/Show', ['viagem' => $viagem]);
+        $motoristas = $this->motoristaService->getAllMotoristas();
+        $veiculos = $this->veiculoService->getAllVeiculos();
+
+        return Inertia::render('Viagens/Show', [
+            'viagem' => $viagem,
+            'motoristas' => $motoristas,
+            'veiculos' => $veiculos,
+        ]);
     }
 
     /**
