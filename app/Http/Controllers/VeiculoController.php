@@ -20,7 +20,7 @@ class VeiculoController extends Controller
      */
     public function index(Request $request)
     {
-        $veiculos = $this->veiculoService->dataTable($request->all());
+        $veiculos = $this->veiculoService->index($request->all());
 
         return Inertia::render('Veiculos/Index', [
             'veiculos' => $veiculos,
@@ -86,4 +86,5 @@ class VeiculoController extends Controller
         return redirect()->route('veiculos.index')
             ->with('success', 'Veículo excluído com sucesso!');
     }
+
 }

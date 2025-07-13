@@ -18,9 +18,9 @@ class VeiculoService
         $this->dataTable = $dataTable;
     }
 
-    public function index()
+    public function index($params)
     {
-        return $this->repository->all();
+        return $this->dataTable->getTableData($params);
     }
 
     public function show($id)
@@ -67,11 +67,8 @@ class VeiculoService
         return $this->repository->delete($id);
     }
 
-    /**
-     * Pega os dados da dataTable
-     */
-    public function dataTable(array $params): array
+    public function getAllVeiculos()
     {
-        return $this->dataTable->getTableData($params);
+        return $this->repository->all();
     }
 }

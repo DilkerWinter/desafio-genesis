@@ -32,5 +32,4 @@ Route::resource('veiculos', VeiculoController::class);
 Route::resource('motoristas', MotoristaController::class);
 Route::resource('viagens', ViagemController::class);
 
-
 require __DIR__.'/auth.php';

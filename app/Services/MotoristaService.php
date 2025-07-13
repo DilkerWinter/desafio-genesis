@@ -19,9 +19,9 @@ class MotoristaService
         $this->dataTable = $dataTable;
     }
 
-    public function index()
+    public function index($params)
     {
-        return $this->repository->all();
+        return $this->dataTable->getTableData($params);
     }
 
     public function show($id)
@@ -64,11 +64,8 @@ class MotoristaService
         return $this->repository->delete($id);
     }
 
-    /**
-     * Pega os dados da dataTable
-     */
-    public function dataTable(array $params): array
+    public function getAllMotoristas()
     {
-        return $this->dataTable->getTableData($params);
+        return $this->repository->all();
     }
 }
