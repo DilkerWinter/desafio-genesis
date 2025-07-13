@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\DataTables\MotoristaDataTable;
 use App\Repositories\MotoristaRepository;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
@@ -11,17 +10,15 @@ use Illuminate\Validation\Rule;
 class MotoristaService
 {
     protected $repository;
-    protected $dataTable;
 
-    public function __construct(MotoristaRepository $repository, MotoristaDataTable $dataTable)
+    public function __construct(MotoristaRepository $repository)
     {
         $this->repository = $repository;
-        $this->dataTable = $dataTable;
     }
 
-    public function index($params)
+    public function list()
     {
-        return $this->dataTable->getTableData($params);
+        return $this->repository->all();
     }
 
     public function show($id)

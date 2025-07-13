@@ -30,6 +30,7 @@ class Viagem extends Model
 
     protected $appends = ['distancia_total', 'duracao_total'];
 
+    protected $with = ['motorista', 'veiculo'];
 
     public function motorista()
     {

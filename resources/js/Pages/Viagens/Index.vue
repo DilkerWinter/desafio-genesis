@@ -161,29 +161,39 @@
 </template>
 
 <script setup>
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import ViagemDataTable from "@/Components/UI/DataTable/ViagemDataTable.vue";
 import CadastroModal from "@/Components/UI/Modal/CadastroModal.vue";
 import InputField from "@/Components/UI/Inputs/InputField.vue";
 import InputChoose from "@/Components/UI/Inputs/InputChoose.vue";
 import { router } from "@inertiajs/vue3";
+import axios from "axios";
 
 const props = defineProps({
     viagens: {
         type: Object,
         required: true,
     },
-    motoristas: {
-        type: Object,
-        required: true,
-    },
-    veiculos: {
-        type: Object,
-        required: true,
-    },
 });
 
+const motoristas = ref([]);
+const veiculos = ref([]);
+
 const mostrarCadastro = ref(false);
+
+watch(mostrarCadastro, async (val) => {
+    if (val) {
+        try {
+            const resMotoristas = await axios.get(route('motoristas.list'));
+            const resVeiculos = await axios.get(route('veiculos.list'));
+
+            motoristas.value = resMotoristas.data;
+            veiculos.value = resVeiculos.data;
+        } catch (error) {
+            console.error('Erro ao carregar motoristas/veículos:', error);
+        }
+    }
+});
 
 const form = ref({
     motorista_id: null,
@@ -378,13 +388,13 @@ function mascararHora(campo) {
     }
 }
 
-const veiculosFormatados = computed(() =>
-    props.veiculos.map((v) => ({
+const veiculosFormatados = computed(() => {
+    const lista = Array.isArray(veiculos.value) ? veiculos.value : [];
+    return lista.map((v) => ({
         ...v,
         label: `${v.modelo} - ${v.placa}`,
-    }))
-);
-
+    }));
+});
 
 function converterParaISODateTime(dataBr, hora) {
     const [dia, mes, ano] = dataBr.split("/");
