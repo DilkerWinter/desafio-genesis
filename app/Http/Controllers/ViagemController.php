@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\MotoristaService;
-use App\Services\VeiculoService;
+use App\DataTables\ViagemDataTable;
 use App\Services\ViagemService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -11,36 +10,21 @@ use Inertia\Inertia;
 class ViagemController extends Controller
 {
     protected $viagemService;
-    protected $motoristaService;
-    protected $veiculoService;
 
-    public function __construct(ViagemService $viagemService, MotoristaService $motoristaService, VeiculoService $veiculoService)
+    public function __construct(ViagemService $viagemService)
     {
         $this->viagemService = $viagemService;
-        $this->motoristaService = $motoristaService;
-        $this->veiculoService = $veiculoService;
     }
 
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(Request $request,ViagemDataTable $dataTable)
     {
-        //Sei que nao e tao performatico, ate daria pra adicionar um Redis 
-        //com cache caso tenha uma quantidade enorme de Motoristas/Veiculos
-        //mas partindo do principio que Motoristas seriam funcinarios da empresa
-        //e veiculos a frota (empresas de medio pequeno porte) nao teria tanto problema em performace (eu acho)
-
-        $viagens = $this->viagemService->index($request->all());
-
-        //Buscando para adicionar no cadastro de viagem as opcoes de motoristas e veiculos
-        $motoristas = $this->motoristaService->getAllMotoristas();
-        $veiculos = $this->veiculoService->getAllVeiculos();
+        $viagens = $dataTable->getTableData($request->all());
 
         return Inertia::render('Viagens/Index', [
             'viagens' => $viagens,
-            'veiculos' => $veiculos,
-            'motoristas' => $motoristas,
             'filters' => $request->only(['search', 'sortKey', 'sortOrder', 'perPage', 'page']),
         ]);
     }
@@ -70,13 +54,9 @@ class ViagemController extends Controller
     public function show(string $id)
     {
         $viagem = $this->viagemService->show($id);
-        $motoristas = $this->motoristaService->getAllMotoristas();
-        $veiculos = $this->veiculoService->getAllVeiculos();
 
         return Inertia::render('Viagens/Show', [
             'viagem' => $viagem,
-            'motoristas' => $motoristas,
-            'veiculos' => $veiculos,
         ]);
     }
 

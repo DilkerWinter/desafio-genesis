@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\DataTables\VeiculoDataTable;
 use App\Repositories\VeiculoRepository;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
@@ -10,17 +9,15 @@ use Illuminate\Support\Facades\Validator;
 class VeiculoService
 {
     protected $repository;
-    protected $dataTable;
 
-    public function __construct(VeiculoRepository $repository, VeiculoDataTable $dataTable)
+    public function __construct(VeiculoRepository $repository)
     {
         $this->repository = $repository;
-        $this->dataTable = $dataTable;
     }
 
-    public function index($params)
+    public function list()
     {
-        return $this->dataTable->getTableData($params);
+        return $this->repository->all();
     }
 
     public function show($id)
