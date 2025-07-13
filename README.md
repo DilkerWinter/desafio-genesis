@@ -60,9 +60,9 @@ composer install
 npm install
 ```
 
-### 6. Rode as migrações
+### 6. Rode as migrações com seeders
 ```bash
-php artisan migrate
+ php artisan migrate:fresh --seed
 ```
 
 ### 7. Rode o projeto
