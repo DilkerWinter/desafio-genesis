@@ -38,4 +38,23 @@ class ViagemRepository
         $model = $this->getModel()::findOrFail($id);
         return $model->delete();
     }
+
+    /**
+     * Retorna os dados para usar na DataTable
+     */
+    public function searchAndPaginate(array $params)
+    {
+        $perPage = data_get($params, 'perPage', 5);
+        $page = data_get($params, 'page', 1);
+        $sortKey = data_get($params, 'sortKey', 'data_hora_inicial');
+        $sortOrder = data_get($params, 'sortOrder', 'asc');
+
+        $query = $this->getModel()::query();
+
+        if (in_array($sortKey, ['id', 'data_hora_inicial'])) {
+            $query->orderBy($sortKey, $sortOrder);
+        }
+
+        return $query->paginate($perPage, ['*'], 'page', $page);
+    }
 }

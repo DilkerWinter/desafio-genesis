@@ -2,16 +2,19 @@
 
 namespace App\Services;
 
+use App\DataTables\ViagemDataTable;
 use App\Repositories\ViagemRepository;
 use Illuminate\Support\Facades\Validator;
 
 class ViagemService
 {
     protected $repository;
+    protected $dataTable;
 
-    public function __construct(ViagemRepository $repository)
+    public function __construct(ViagemRepository $repository,ViagemDataTable $dataTable)
     {
         $this->repository = $repository;
+        $this->dataTable = $dataTable;
     }
 
     public function index()
@@ -59,5 +62,13 @@ class ViagemService
     public function destroy($id)
     {
         return $this->repository->delete($id);
+    }
+
+    /**
+     * Pega os dados da dataTable
+     */
+    public function dataTable(array $params): array
+    {
+        return $this->dataTable->getTableData($params);
     }
 }
