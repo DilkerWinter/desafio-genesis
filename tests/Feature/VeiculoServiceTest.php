@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\DataTables\VeiculoDataTable;
 use App\Models\Veiculo;
 use App\Repositories\VeiculoRepository;
 use App\Services\VeiculoService;
@@ -19,12 +20,15 @@ class VeiculoServiceTest extends TestCase
     {
         parent::setUp();
 
-        $this->service = new VeiculoService(new VeiculoRepository());
+        $repository = new VeiculoRepository();
+        $dataTable = new VeiculoDataTable($repository);
+
+        $this->service = new VeiculoService($repository, $dataTable);
     }
 
     /**
-    * @test
-    */
+     * @test
+     */
     public function deve_cadastrar_veiculo_com_dados_validos()
     {
         $dados = Veiculo::factory()->make()->toArray();
@@ -38,14 +42,14 @@ class VeiculoServiceTest extends TestCase
     }
 
     /**
-    * @test
-    */
+     * @test
+     */
     public function nao_deve_cadastrar_veiculo_com_renavam_invalido()
     {
         $this->expectException(ValidationException::class);
 
         $dados = Veiculo::factory()->make([
-            'renavam' => '123', 
+            'renavam' => '123',
         ])->toArray();
 
         $this->service->store($dados);
@@ -54,14 +58,14 @@ class VeiculoServiceTest extends TestCase
     }
 
     /**
-    * @test
-    */
+     * @test
+     */
     public function nao_deve_cadastrar_veiculo_com_placa_invalida()
     {
         $this->expectException(ValidationException::class);
 
         $dados = Veiculo::factory()->make([
-            'placa' => 'ABC1234', 
+            'placa' => 'ABC1234',
         ])->toArray();
 
         $this->service->store($dados);
@@ -70,8 +74,8 @@ class VeiculoServiceTest extends TestCase
     }
 
     /**
-    * @test
-    */
+     * @test
+     */
     public function deve_atualizar_veiculo_com_sucesso()
     {
         $veiculo = Veiculo::factory()->create();
@@ -81,7 +85,7 @@ class VeiculoServiceTest extends TestCase
             'ano' => 2022,
             'data_aquisicao' => now()->subYears(2)->format('Y-m-d'),
             'km_aquisicao' => 50000,
-            'renavam' => $veiculo->renavam, 
+            'renavam' => $veiculo->renavam,
             'placa' => $veiculo->placa,
         ];
 
@@ -95,8 +99,8 @@ class VeiculoServiceTest extends TestCase
     }
 
     /**
-    * @test
-    */
+     * @test
+     */
     public function deve_excluir_veiculo_com_sucesso()
     {
         $veiculo = Veiculo::factory()->create();
@@ -107,20 +111,36 @@ class VeiculoServiceTest extends TestCase
     }
 
     /**
-    * @test
-    */
-    public function deve_retornar_lista_de_veiculos()
+     * @test
+     */
+    public function deve_retornar_datatable_de_veiculos()
     {
         Veiculo::factory()->count(3)->create();
 
-        $veiculos = $this->service->index();
+        $params = []; 
+        $resultado = $this->service->index($params);
 
-        $this->assertCount(3, $veiculos);
+        $this->assertArrayHasKey('data', $resultado);
+        $this->assertCount(3, $resultado['data']);
+
+        $this->assertArrayHasKey('id', $resultado['data'][0]);
+        $this->assertArrayHasKey('modelo', $resultado['data'][0]);
+        $this->assertArrayHasKey('ano', $resultado['data'][0]);
+        $this->assertArrayHasKey('renavam', $resultado['data'][0]);
+        $this->assertArrayHasKey('placa', $resultado['data'][0]);
+
+        $this->assertArrayHasKey('total', $resultado);
+        $this->assertArrayHasKey('lastPage', $resultado);
+        $this->assertArrayHasKey('currentPage', $resultado);
+        $this->assertArrayHasKey('perPage', $resultado);
+
+        $this->assertEquals(3, $resultado['total']);
     }
 
+
     /**
-    * @test
-    */
+     * @test
+     */
     public function deve_retornar_um_veiculo_pelo_id()
     {
         $veiculo = Veiculo::factory()->create();

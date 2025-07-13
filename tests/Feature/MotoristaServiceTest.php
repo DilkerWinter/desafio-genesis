@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\DataTables\MotoristaDataTable;
 use App\Models\Motorista;
 use App\Repositories\MotoristaRepository;
 use App\Services\MotoristaService;
@@ -19,7 +20,10 @@ class MotoristaServiceTest extends TestCase
     {
         parent::setUp();
 
-        $this->service = new MotoristaService(new MotoristaRepository());
+        $repository = new MotoristaRepository();
+        $dataTable = new MotoristaDataTable($repository);
+
+        $this->service = new MotoristaService($repository, $dataTable);
     }
 
     /**
@@ -119,14 +123,32 @@ class MotoristaServiceTest extends TestCase
     /**
      * @test
      */
-    public function deve_retornar_lista_de_motoristas()
+    /**
+     * @test
+     */
+    public function deve_retornar_datatable_de_motoristas()
     {
         Motorista::factory()->count(3)->create();
 
-        $motoristas = $this->service->index();
+        $params = [];
+        $resultado = $this->service->index($params);
 
-        $this->assertCount(3, $motoristas);
+        $this->assertArrayHasKey('data', $resultado);
+        $this->assertCount(3, $resultado['data']);
+
+        $this->assertArrayHasKey('id', $resultado['data'][0]);
+        $this->assertArrayHasKey('nome', $resultado['data'][0]);
+        $this->assertArrayHasKey('data_nascimento', $resultado['data'][0]);
+        $this->assertArrayHasKey('cnh', $resultado['data'][0]);
+
+        $this->assertArrayHasKey('total', $resultado);
+        $this->assertArrayHasKey('lastPage', $resultado);
+        $this->assertArrayHasKey('currentPage', $resultado);
+        $this->assertArrayHasKey('perPage', $resultado);
+
+        $this->assertEquals(3, $resultado['total']);
     }
+
 
     /**
      * @test
