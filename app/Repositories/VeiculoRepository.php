@@ -18,7 +18,7 @@ class VeiculoRepository
 
     public function find($id)
     {
-        return $this->getModel()::with(['viagens.motorista'])->findOrFail($id);
+        return $this->getModel()::with(['viagens.motoristas'])->findOrFail($id);
     }
 
     public function create(array $data)

@@ -25,7 +25,7 @@ class ViagemDataTable
         $formattedData = $data->map(function ($viagem) {
             return [
                 'id' => $viagem->id,
-                'motorista' => $viagem->motorista,
+                'motoristas' => $viagem->motoristas,
                 'veiculo' => $viagem->veiculo,
                 'km_inicial' => $viagem->km_inicial,
                 'km_final' => $viagem->km_final,

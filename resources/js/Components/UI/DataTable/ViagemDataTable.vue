@@ -6,7 +6,7 @@
             <thead>
                 <tr>
                     <th class="w-[20%] border border-gray-300 px-4 py-2">
-                        Motorista
+                        Motoristas
                     </th>
                     <th class="w-[20%] border border-gray-300 px-4 py-2">
                         Veículo
@@ -41,21 +41,19 @@
                     class="hover:bg-gray-100"
                 >
                     <td class="border text-center border-gray-300 px-4 py-2">
-                        <template v-if="viagem.motorista">
+                        <template v-if="viagem.motoristas && viagem.motoristas.length">
+                          <div v-for="motorista in viagem.motoristas" :key="motorista.id">
                             <a
-                                @click.prevent="
-                                    $inertia.visit(
-                                        route(
-                                            'motoristas.show',
-                                            viagem.motorista.id
-                                        )
-                                    )
-                                "
-                                class="hover:underline cursor-pointer"
+                              @click.prevent="
+                                $inertia.visit(route('motoristas.show', motorista.id))
+                              "
+                              class="hover:underline cursor-pointer"
                             >
-                                {{ viagem.motorista.nome }}
+                              {{ motorista.nome }}
                             </a>
+                          </div>
                         </template>
+
                         <template v-else> Não informado </template>
                     </td>
 

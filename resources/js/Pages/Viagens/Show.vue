@@ -42,33 +42,85 @@
                     class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-gray-800"
                 >
                     <div>
-                        <p class="font-semibold">Motorista</p>
+                        <p class="font-semibold">Motoristas</p>
                         <template v-if="editandoId === viagem.id">
-                            <select
-                                v-model="editarViagem.motorista_id"
-                                @blur="validateMotorista"
-                                class="w-full border rounded px-2 py-1"
-                            >
-                                <option :value="null">Não informado</option>
-                                <option v-for="motoristaOption in motoristas" :key="motoristaOption.id" :value="motoristaOption.id">
-                                    {{ motoristaOption.nome }}
-                                </option>
-                            </select>
-                            <p
-                                v-if="errors.motorista_id"
-                                class="text-red-500 text-sm mt-1"
-                            >
-                                {{ errors.motorista_id }}
-                            </p>
+                            <div class="space-y-2">
+                                <div
+                                    v-for="(
+                                        id, index
+                                    ) in editarViagem.motoristas"
+                                    :key="index"
+                                    class="flex items-center gap-2"
+                                >
+                                    <select
+                                        v-model="editarViagem.motoristas[index]"
+                                        class="w-full border rounded px-2 py-1"
+                                    >
+                                        <option :value="null">
+                                            Não informado
+                                        </option>
+                                        <option
+                                            v-for="motoristaOption in motoristasFiltrados(index)"
+                                            :key="motoristaOption.id"
+                                            :value="String(motoristaOption.id)"
+                                        >
+                                            {{ motoristaOption.nome }}
+                                        </option>
+                                    </select>
+                                    <button
+                                        v-if="
+                                            editarViagem.motoristas.length > 1
+                                        "
+                                        type="button"
+                                        @click="removerMotorista(index)"
+                                        class="text-red-500 hover:underline"
+                                    >
+                                        Remover
+                                    </button>
+                                </div>
+                                <button
+                                    type="button"
+                                    @click="adicionarMotorista"
+                                    class="text-blue-500 hover:underline text-sm mt-1"
+                                >
+                                    + Adicionar outro motorista
+                                </button>
+                                <p
+                                    v-if="errors.motoristas"
+                                    class="text-red-500 text-sm"
+                                >
+                                    {{ errors.motoristas }}
+                                </p>
+                            </div>
                         </template>
                         <template v-else>
-                            <a
-                                v-if="viagem.motorista"
-                                @click.prevent="$inertia.visit(route('motoristas.show', viagem.motorista.id))"
-                                class="hover:underline cursor-pointer"
+                            <div
+                                v-if="
+                                    viagem.motoristas &&
+                                    viagem.motoristas.length
+                                "
                             >
-                                {{ viagem.motorista.nome }}
-                            </a>
+                                <ul class="list-inside">
+                                    <li
+                                        v-for="motorista in viagem.motoristas"
+                                        :key="motorista.id"
+                                    >
+                                        <a
+                                            @click.prevent="
+                                                $inertia.visit(
+                                                    route(
+                                                        'motoristas.show',
+                                                        motorista.id
+                                                    )
+                                                )
+                                            "
+                                            class="hover:underline cursor-pointer"
+                                        >
+                                            {{ motorista.nome }}
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
                             <p v-else>não informado</p>
                         </template>
                     </div>
@@ -81,7 +133,11 @@
                                 class="w-full border rounded px-2 py-1"
                             >
                                 <option :value="null">Não informado</option>
-                                <option v-for="veiculoOption in veiculosFormatados" :key="veiculoOption.id" :value="veiculoOption.id">
+                                <option
+                                    v-for="veiculoOption in veiculosFormatados"
+                                    :key="veiculoOption.id"
+                                    :value="veiculoOption.id"
+                                >
                                     {{ veiculoOption.label }}
                                 </option>
                             </select>
@@ -95,16 +151,27 @@
                         <template v-else>
                             <a
                                 v-if="viagem.veiculo"
-                                @click.prevent="$inertia.visit(route('veiculos.show', viagem.veiculo.id))"
+                                @click.prevent="
+                                    $inertia.visit(
+                                        route(
+                                            'veiculos.show',
+                                            viagem.veiculo.id
+                                        )
+                                    )
+                                "
                                 class="hover:underline cursor-pointer"
                             >
-                                {{ viagem.veiculo.modelo }} ({{ viagem.veiculo.placa }})
+                                {{ viagem.veiculo.modelo }} ({{
+                                    viagem.veiculo.placa
+                                }})
                             </a>
                             <p v-else>não informado</p>
                         </template>
                     </div>
                     <div>
-                        <p class="font-semibold">Kilometragem do Veiculo Inicial</p>
+                        <p class="font-semibold">
+                            Kilometragem do Veiculo Inicial
+                        </p>
                         <template v-if="editandoId === viagem.id">
                             <input
                                 type="number"
@@ -124,7 +191,9 @@
                         </template>
                     </div>
                     <div>
-                        <p class="font-semibold">Kilometragem do Veiculo Final</p>
+                        <p class="font-semibold">
+                            Kilometragem do Veiculo Final
+                        </p>
                         <template v-if="editandoId === viagem.id">
                             <input
                                 type="number"
@@ -146,7 +215,9 @@
                     <div>
                         <p class="font-semibold">Distância Total</p>
                         <template v-if="editandoId === viagem.id">
-                            <p class="w-full border rounded px-2 py-1 bg-gray-100">
+                            <p
+                                class="w-full border rounded px-2 py-1 bg-gray-100"
+                            >
                                 {{ calcularDistanciaTotal() }} Km
                             </p>
                         </template>
@@ -237,7 +308,9 @@
                     <div>
                         <p class="font-semibold">Duração Total</p>
                         <template v-if="editandoId === viagem.id">
-                            <p class="w-full border rounded px-2 py-1 bg-gray-100">
+                            <p
+                                class="w-full border rounded px-2 py-1 bg-gray-100"
+                            >
                                 {{ calcularDuracaoTotal() }}
                             </p>
                         </template>
@@ -283,21 +356,17 @@ import DeleteButton from "@/Components/UI/Buttons/DeleteButton.vue";
 import EditButton from "@/Components/UI/Buttons/EditButton.vue";
 import SaveButton from "@/Components/UI/Buttons/SaveButton.vue";
 import CancelButton from "@/Components/UI/Buttons/CancelButton.vue";
+import axios from "axios";
 
 const props = defineProps({
     viagem: {
         type: Object,
         required: true,
     },
-    motoristas: {
-        type: Array,
-        default: () => [],
-    },
-    veiculos: {
-        type: Array,
-        default: () => [],
-    },
 });
+
+const motoristas = ref([]);
+const veiculos = ref([]);
 
 const mostrarModalSalvar = ref(false);
 const mostrarModalDeletar = ref(false);
@@ -305,14 +374,14 @@ const viagemParaExcluirId = ref(null);
 
 const editandoId = ref(null);
 const editarViagem = reactive({
-    motorista_id: null,
+    motoristas: [],
     veiculo_id: null,
     km_inicial: null,
     km_final: null,
-    data_inicial_input: "", 
-    hora_inicial_input: "", 
-    data_final_input: "",  
-    hora_final_input: "", 
+    data_inicial_input: "",
+    hora_inicial_input: "",
+    data_final_input: "",
+    hora_final_input: "",
 });
 
 const errors = reactive({
@@ -332,7 +401,7 @@ const regexData = /^\d{2}\/\d{2}\/\d{4}$/;
 const regexHora = /^([0-1]\d|2[0-3]):([0-5]\d)$/;
 
 function formatarData(dataStr) {
-    if (!dataStr) return "-";
+    if (!dataStr) return "";
     const data = new Date(dataStr.replace(" ", "T"));
     const dia = data.getDate().toString().padStart(2, "0");
     const mes = (data.getMonth() + 1).toString().padStart(2, "0");
@@ -341,7 +410,7 @@ function formatarData(dataStr) {
 }
 
 function formatarHora(dataStr) {
-    if (!dataStr) return "-";
+    if (!dataStr) return "";
     const data = new Date(dataStr);
     const hora = data.getHours().toString().padStart(2, "0");
     const minuto = data.getMinutes().toString().padStart(2, "0");
@@ -366,10 +435,42 @@ function getFormattedDateTime(dateStr, timeStr) {
     return `${isoDate}T${timeStr}:00`;
 }
 
-function editar(viagem) {
+function adicionarMotorista() {
+    editarViagem.motoristas.push(null);
+}
+
+function removerMotorista(index) {
+    editarViagem.motoristas.splice(index, 1);
+}
+
+function motoristasFiltrados(indiceAtual) {
+  const selecionados = editarViagem.motoristas
+    .filter((id, i) => id !== null && i !== indiceAtual)
+    .map(id => Number(id));  
+
+  return motoristas.value.filter(
+    (motorista) => !selecionados.includes(motorista.id)
+  );
+}
+
+
+
+async function editar(viagem) {
+    try {
+        const resMotoristas = await axios.get(route("motoristas.list"));
+        const resVeiculos = await axios.get(route("veiculos.list"));
+
+        motoristas.value = resMotoristas.data;
+        veiculos.value = resVeiculos.data;
+    } catch (error) {
+        console.error("Erro ao carregar motoristas/veículos:", error);
+    }
     editandoId.value = viagem.id;
-    editarViagem.motorista_id = viagem.motorista ? viagem.motorista.id : null;
-    editarViagem.veiculo_id = viagem.veiculo ? viagem.veiculo.id : null;
+    editarViagem.motoristas = viagem.motoristas?.map((m) => String(m.id)) || [
+        null,
+    ];
+    editarViagem.veiculo_id = viagem.veiculo_id;
+
     editarViagem.km_inicial = viagem.km_inicial;
     editarViagem.km_final = viagem.km_final;
 
@@ -387,11 +488,15 @@ function cancelarEdicao() {
     Object.keys(errors).forEach((key) => (errors[key] = null));
 }
 
-function validateMotorista() {
-    if (!editarViagem.motorista_id) {
-        errors.motorista_id = "Motorista é obrigatório.";
+function validateMotoristas() {
+    if (
+        !editarViagem.motoristas.length ||
+        editarViagem.motoristas.some((id) => !id)
+    ) {
+        errors.motoristas =
+            "Todos os campos de motorista devem estar preenchidos.";
     } else {
-        errors.motorista_id = null;
+        errors.motoristas = null;
     }
 }
 
@@ -408,8 +513,7 @@ function validateKmInicial() {
     if (value === null || value === "" || isNaN(value)) {
         errors.km_inicial = "Informe a kilometragem inicial.";
     } else if (value < 0) {
-        errors.km_inicial =
-            "Kilometragem inicial deve ser maior ou igual a 0.";
+        errors.km_inicial = "Kilometragem inicial deve ser maior ou igual a 0.";
     } else {
         errors.km_inicial = null;
     }
@@ -429,12 +533,12 @@ function validateKmFinal() {
     const final = parseInt(editarViagem.km_final);
 
     if (final <= inicial) {
-        errors.km_final =
-            "Kilometragem final deve ser maior que a inicial.";
+        errors.km_final = "Kilometragem final deve ser maior que a inicial.";
     } else {
         errors.km_final = null;
     }
 }
+
 
 function validarData(str) {
     if (!regexData.test(str)) return false;
@@ -461,19 +565,31 @@ function validarHora(str) {
 }
 
 function validateDataHoraInicial() {
-    if (!editarViagem.data_inicial_input || !validarData(editarViagem.data_inicial_input)) {
-        errors.data_hora_inicial = "Informe uma data inicial válida (dd/mm/aaaa).";
+    if (
+        !editarViagem.data_inicial_input ||
+        !validarData(editarViagem.data_inicial_input)
+    ) {
+        errors.data_hora_inicial =
+            "Informe uma data inicial válida (dd/mm/aaaa).";
         return;
     }
 
-    if (!editarViagem.hora_inicial_input || !validarHora(editarViagem.hora_inicial_input)) {
+    if (
+        !editarViagem.hora_inicial_input ||
+        !validarHora(editarViagem.hora_inicial_input)
+    ) {
         errors.data_hora_inicial = "Informe uma hora inicial válida (hh:mm).";
         return;
     }
 
-    const initialDateTime = new Date(getFormattedDateTime(editarViagem.data_inicial_input, editarViagem.hora_inicial_input));
+    const initialDateTime = new Date(
+        getFormattedDateTime(
+            editarViagem.data_inicial_input,
+            editarViagem.hora_inicial_input
+        )
+    );
     const now = new Date();
-    now.setSeconds(0,0);
+    now.setSeconds(0, 0);
 
     if (isNaN(initialDateTime.getTime())) {
         errors.data_hora_inicial = "Data e hora inicial inválidas.";
@@ -491,11 +607,13 @@ function validateDataHoraFinal() {
     const hasHoraFinal = !!editarViagem.hora_final_input;
 
     if (hasDataFinal && !hasHoraFinal) {
-        errors.data_hora_final = "Informe a hora final se a data final estiver preenchida.";
+        errors.data_hora_final =
+            "Informe a hora final se a data final estiver preenchida.";
         return;
     }
     if (!hasDataFinal && hasHoraFinal) {
-        errors.data_hora_final = "Informe a data final se a hora final estiver preenchida.";
+        errors.data_hora_final =
+            "Informe a data final se a hora final estiver preenchida.";
         return;
     }
 
@@ -514,17 +632,29 @@ function validateDataHoraFinal() {
         return;
     }
 
-    const startDateTime = new Date(getFormattedDateTime(editarViagem.data_inicial_input, editarViagem.hora_inicial_input));
-    const endDateTime = new Date(getFormattedDateTime(editarViagem.data_final_input, editarViagem.hora_final_input));
+    const startDateTime = new Date(
+        getFormattedDateTime(
+            editarViagem.data_inicial_input,
+            editarViagem.hora_inicial_input
+        )
+    );
+    const endDateTime = new Date(
+        getFormattedDateTime(
+            editarViagem.data_final_input,
+            editarViagem.hora_final_input
+        )
+    );
 
     if (isNaN(endDateTime.getTime())) {
         errors.data_hora_final = "Data e hora final inválidas.";
     } else if (endDateTime < startDateTime) {
-        errors.data_hora_final = "Data/Hora Final não pode ser anterior à Data/Hora Inicial.";
+        errors.data_hora_final =
+            "Data/Hora Final não pode ser anterior à Data/Hora Inicial.";
     } else {
         errors.data_hora_final = null;
     }
 }
+
 
 function mascararData(campo) {
     let valor = editarViagem[campo].replace(/\D/g, "");
@@ -556,7 +686,7 @@ function mascararHora(campo) {
 }
 
 const veiculosFormatados = computed(() =>
-    props.veiculos.map((v) => ({
+    veiculos.value.map((v) => ({
         ...v,
         label: `${v.modelo} - ${v.placa}`,
     }))
@@ -573,10 +703,24 @@ function calcularDistanciaTotal() {
 }
 
 function calcularDuracaoTotal() {
-    const startDateTime = new Date(getFormattedDateTime(editarViagem.data_inicial_input, editarViagem.hora_inicial_input));
-    const endDateTime = new Date(getFormattedDateTime(editarViagem.data_final_input, editarViagem.hora_final_input));
+    const startDateTime = new Date(
+        getFormattedDateTime(
+            editarViagem.data_inicial_input,
+            editarViagem.hora_inicial_input
+        )
+    );
+    const endDateTime = new Date(
+        getFormattedDateTime(
+            editarViagem.data_final_input,
+            editarViagem.hora_final_input
+        )
+    );
 
-    if (isNaN(startDateTime.getTime()) || isNaN(endDateTime.getTime()) || endDateTime < startDateTime) {
+    if (
+        isNaN(startDateTime.getTime()) ||
+        isNaN(endDateTime.getTime()) ||
+        endDateTime < startDateTime
+    ) {
         return "00h 00m";
     }
 
@@ -586,7 +730,10 @@ function calcularDuracaoTotal() {
     const hours = Math.floor(diffMinutes / 60);
     const minutes = diffMinutes % 60;
 
-    return `${String(hours).padStart(2, '0')}h ${String(minutes).padStart(2, '0')}m`;
+    return `${String(hours).padStart(2, "0")}h ${String(minutes).padStart(
+        2,
+        "0"
+    )}m`;
 }
 
 function confirmarSalvar() {
@@ -595,7 +742,7 @@ function confirmarSalvar() {
 }
 
 function salvarEdicao() {
-    validateMotorista();
+    validateMotoristas();
     validateVeiculo();
     validateKmInicial();
     validateKmFinal();
@@ -610,14 +757,21 @@ function salvarEdicao() {
     router.put(
         route("viagens.update", editandoId.value),
         {
-            motorista_id: editarViagem.motorista_id,
+            motoristas: editarViagem.motoristas,
             veiculo_id: editarViagem.veiculo_id,
             km_inicial: editarViagem.km_inicial,
-            km_final: editarViagem.km_final || null, // Envia null se estiver vazio
-            data_hora_inicial: getFormattedDateTime(editarViagem.data_inicial_input, editarViagem.hora_inicial_input),
-            data_hora_final: editarViagem.data_final_input && editarViagem.hora_final_input
-                ? getFormattedDateTime(editarViagem.data_final_input, editarViagem.hora_final_input)
-                : null, // Envia null se data ou hora final estiverem vazios
+            km_final: editarViagem.km_final || null,
+            data_hora_inicial: getFormattedDateTime(
+                editarViagem.data_inicial_input,
+                editarViagem.hora_inicial_input
+            ),
+            data_hora_final:
+                editarViagem.data_final_input && editarViagem.hora_final_input
+                    ? getFormattedDateTime(
+                          editarViagem.data_final_input,
+                          editarViagem.hora_final_input
+                      )
+                    : null,
             distancia_total: calcularDistanciaTotal(),
             duracao_total: calcularDuracaoTotal(),
         },
@@ -630,13 +784,17 @@ function salvarEdicao() {
                 console.error("Erro ao atualizar:", e);
                 if (e && e.errors) {
                     for (const field in e.errors) {
-                        // Mapeia os erros de Laravel para os campos do formulário
-                        if (field.includes('data_hora_inicial') && errors.hasOwnProperty('data_hora_inicial')) {
+                        if (
+                            field.includes("data_hora_inicial") &&
+                            errors.hasOwnProperty("data_hora_inicial")
+                        ) {
                             errors.data_hora_inicial = e.errors[field][0];
-                        } else if (field.includes('data_hora_final') && errors.hasOwnProperty('data_hora_final')) {
-                             errors.data_hora_final = e.errors[field][0];
-                        }
-                        else if (errors.hasOwnProperty(field)) {
+                        } else if (
+                            field.includes("data_hora_final") &&
+                            errors.hasOwnProperty("data_hora_final")
+                        ) {
+                            errors.data_hora_final = e.errors[field][0];
+                        } else if (errors.hasOwnProperty(field)) {
                             errors[field] = e.errors[field][0];
                         }
                     }

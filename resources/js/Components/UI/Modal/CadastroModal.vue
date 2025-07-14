@@ -5,9 +5,10 @@
     class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
   >
     <div 
-    @click.stop
-    class="bg-white rounded-lg shadow-lg max-w-lg w-full p-6 relative">
-
+      @click.stop
+      class="bg-white rounded-lg shadow-lg max-w-lg w-full p-6 relative"
+      style="max-height: 92vh; overflow-y: auto;"
+    >
       <div class="space-y-4">
         <slot></slot>
       </div>
@@ -29,6 +30,7 @@
     </div>
   </div>
 </template>
+
 
 <script setup>
 import { defineProps, defineEmits } from "vue";
