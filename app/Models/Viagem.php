@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -30,12 +29,15 @@ class Viagem extends Model
 
     protected $appends = ['distancia_total', 'duracao_total'];
 
-    protected $with = ['motorista', 'veiculo'];
+    protected $with = ['motoristas', 'veiculo'];
 
-    public function motorista()
+    public function motoristas()
     {
-        return $this->belongsTo(Motorista::class);
+        return $this->belongsToMany(Motorista::class, 'motorista_viagem', 'viagem_id', 'motorista_id')
+            ->withTimestamps();
     }
+
+
 
     public function veiculo()
     {

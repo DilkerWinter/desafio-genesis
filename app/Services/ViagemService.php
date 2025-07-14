@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Repositories\ViagemRepository;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
 
 class ViagemService
@@ -27,34 +28,47 @@ class ViagemService
     public function store(array $data)
     {
         $validator = Validator::make($data, [
-            'motorista_id' => 'required|exists:motoristas,id',
+            'motoristas' => 'required|array|min:1',
+            'motoristas.*' => 'exists:motoristas,id',
             'veiculo_id' => 'required|exists:veiculos,id',
             'km_inicial' => 'required|integer|min:0',
             'km_final' => 'nullable|integer|gt:km_inicial',
             'data_hora_inicial' => 'required|date',
-            'data_hora_final' => 'nullable|date|after:data_saida',
+            'data_hora_final' => 'nullable|date|after:data_hora_inicial',
         ]);
+
 
         $validator->validate();
 
-        return $this->repository->create($data);
+        $viagem = $this->repository->create(Arr::except($data, ['motoristas']));
+        $viagem->motoristas()->sync($data['motoristas']);
+
+        return $viagem;
     }
 
     public function update($id, array $data)
     {
         $validator = Validator::make($data, [
-            'motorista_id' => 'required|exists:motoristas,id',
+            'motoristas' => 'required|array|min:1',
+            'motoristas.*' => 'exists:motoristas,id',
             'veiculo_id' => 'required|exists:veiculos,id',
             'km_inicial' => 'required|integer|min:0',
             'km_final' => 'nullable|integer|gt:km_inicial',
             'data_hora_inicial' => 'required|date',
-            'data_hora_final' => 'nullable|date|after:data_saida',
+            'data_hora_final' => 'nullable|date|after:data_hora_inicial',
         ]);
 
         $validator->validate();
 
-        return $this->repository->update($id, $data);
+        $viagem = $this->repository->update($id, Arr::except($data, ['motoristas']));
+
+        if (isset($data['motoristas'])) {
+            $viagem->motoristas()->sync($data['motoristas']);
+        }
+
+        return $viagem;
     }
+
 
     public function destroy($id)
     {

@@ -28,17 +28,47 @@
     >
         <form @submit.prevent="salvarViagem" class="space-y-4">
             <div>
-                <label class="block mb-1 font-medium text-gray-700"
-                    >Motorista</label
+                <label class="block font-medium text-gray-700"
+                    >Motoristas</label
                 >
-                <InputChoose
-                    v-model="form.motorista_id"
-                    :options="motoristas"
-                    placeholder="Selecione o motorista"
-                    label-key="nome"
-                    id-key="id"
-                />
+
+                <div
+                    v-for="(motoristaId, index) in form.motoristasSelecionados"
+                    :key="index"
+                    class="flex items-center space-x-2 mb-3"
+                >
+                    <InputChoose
+                        v-model="form.motoristasSelecionados[index]"
+                        :options="motoristasFiltrados(index)"
+                        placeholder="Selecione o motorista"
+                        label-key="nome"
+                        id-key="id"
+                        class="flex-grow"
+                    />
+                    <button
+                        v-if="form.motoristasSelecionados.length > 1"
+                        @click="removerMotorista(index)"
+                        type="button"
+                        class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition"
+                        aria-label="Remover motorista"
+                    >
+                        ×
+                    </button>
+                </div>
+
+                <div class="flex justify-center ">
+                    <button
+                        @click="adicionarMotorista"
+                        type="button"
+                        class="flex items-center space-x-2 px-8 py-1 black bg-gray-300 text-black rounded-2xl hover:bg-gray-700 hover:text-white transition"
+                        aria-label="Adicionar motorista"
+                    >
+                        <span class="text-lg font-bold">+</span>
+                        <span>Adicionar motorista</span>
+                    </button>
+                </div>
             </div>
+
             <div>
                 <label class="block mb-1 font-medium text-gray-700"
                     >Veiculo</label
@@ -184,19 +214,19 @@ const mostrarCadastro = ref(false);
 watch(mostrarCadastro, async (val) => {
     if (val) {
         try {
-            const resMotoristas = await axios.get(route('motoristas.list'));
-            const resVeiculos = await axios.get(route('veiculos.list'));
+            const resMotoristas = await axios.get(route("motoristas.list"));
+            const resVeiculos = await axios.get(route("veiculos.list"));
 
             motoristas.value = resMotoristas.data;
             veiculos.value = resVeiculos.data;
         } catch (error) {
-            console.error('Erro ao carregar motoristas/veículos:', error);
+            console.error("Erro ao carregar motoristas/veículos:", error);
         }
     }
 });
 
 const form = ref({
-    motorista_id: null,
+    motoristasSelecionados: [null],
     veiculo_id: null,
     km_inicial: "",
     km_final: "",
@@ -206,17 +236,38 @@ const form = ref({
     hora_final: "",
 });
 
+function adicionarMotorista() {
+    form.value.motoristasSelecionados.push(null);
+}
+
+function removerMotorista(index) {
+    form.value.motoristasSelecionados.splice(index, 1);
+}
+
+function motoristasFiltrados(indiceAtual) {
+  const selecionados = form.value.motoristasSelecionados
+    .filter((id, i) => id !== null && i !== indiceAtual)
+    .map(id => Number(id));  
+
+  return motoristas.value.filter(
+    (motorista) => !selecionados.includes(motorista.id)
+  );
+}
+
 const errors = ref({});
 
 function validarMotorista() {
-    if (!form.value.motorista_id || form.value.motorista_id === 0) {
-        errors.value.motorista_id = "Selecione um motorista.";
+    const selecionados = form.value.motoristasSelecionados.filter(id => id !== null);
+
+    if (selecionados.length === 0) {
+        errors.value.motoristas = "Selecione pelo menos um motorista.";
         return false;
     } else {
-        delete errors.value.motorista_id;
+        delete errors.value.motoristas;
         return true;
     }
 }
+
 
 function validarVeiculo() {
     if (!form.value.veiculo_id || form.value.veiculo_id === 0) {
@@ -400,7 +451,10 @@ function converterParaISODateTime(dataBr, hora) {
     const [dia, mes, ano] = dataBr.split("/");
     const [hh, mm] = hora.split(":");
 
-    return `${ano}-${mes.padStart(2, "0")}-${dia.padStart(2, "0")}T${hh.padStart(2, "0")}:${mm.padStart(2, "0")}`;
+    return `${ano}-${mes.padStart(2, "0")}-${dia.padStart(
+        2,
+        "0"
+    )}T${hh.padStart(2, "0")}:${mm.padStart(2, "0")}`;
 }
 
 function salvarViagem() {
@@ -424,11 +478,16 @@ function salvarViagem() {
 
     const dataHoraFinal =
         form.value.data_final && form.value.hora_final
-            ? converterParaISODateTime(form.value.data_final, form.value.hora_final)
+            ? converterParaISODateTime(
+                  form.value.data_final,
+                  form.value.hora_final
+              )
             : null;
 
+    console.log("enviar")
+
     const payload = {
-        motorista_id: form.value.motorista_id,
+        motoristas: form.value.motoristasSelecionados.filter(id => id !== null),
         veiculo_id: form.value.veiculo_id,
         km_inicial: form.value.km_inicial,
         km_final: form.value.km_final || null,
@@ -438,7 +497,7 @@ function salvarViagem() {
 
     router.post(route("viagens.store"), payload, {
         onError: (e) => {
-            errors.value.motorista_id = e.motorista_id || null;
+            errors.value.motoristas = e.motoristas || null;
             errors.value.veiculo_id = e.veiculo_id || null;
             errors.value.km_inicial = e.km_inicial || null;
             errors.value.km_final = e.km_final || null;
@@ -447,7 +506,7 @@ function salvarViagem() {
         },
         onSuccess: () => {
             form.value = {
-                motorista_id: null,
+                motoristasSelecionados: [null],
                 veiculo_id: null,
                 km_inicial: "",
                 km_final: "",
@@ -458,8 +517,6 @@ function salvarViagem() {
             };
             mostrarCadastro.value = false;
         },
-        
     });
 }
-
 </script>

@@ -7,18 +7,25 @@
             <ExternalLink class="w-5 h-5" />
         </button>
         <p>
-            <strong>Motorista: </strong>
-            <template v-if="viagem.motorista">
-                <a
-                    @click.prevent="
-                        $inertia.visit(
-                            route('motoristas.show', viagem.motorista.id)
-                        )
-                    "
-                    class="hover:underline cursor-pointer"
-                >
-                    {{ viagem.motorista.nome }}
-                </a>
+            <strong>Motoristas:</strong>
+            <template v-if="viagem.motoristas && viagem.motoristas.length > 0">
+                <ul class=" list-inside">
+                    <li
+                        v-for="motorista in viagem.motoristas"
+                        :key="motorista.id"
+                    >
+                        <a
+                            @click.prevent="
+                                $inertia.visit(
+                                    route('motoristas.show', motorista.id)
+                                )
+                            "
+                            class="hover:underline cursor-pointer"
+                        >
+                            {{ motorista.nome }}
+                        </a>
+                    </li>
+                </ul>
             </template>
             <template v-else> Não informado </template>
         </p>
