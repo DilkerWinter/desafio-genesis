@@ -25,7 +25,7 @@ class ViagemServiceTest extends TestCase
         $repository = new ViagemRepository();
         $dataTable = new ViagemDataTable($repository);
 
-        $this->service = new ViagemService($repository, $dataTable);
+        $this->service = new ViagemService($repository);
     }
 
     /**
@@ -37,7 +37,7 @@ class ViagemServiceTest extends TestCase
         $veiculo = Veiculo::factory()->create();
 
         $dados = [
-            'motorista_id' => $motorista->id,
+            'motoristas' => [$motorista->id],
             'veiculo_id' => $veiculo->id,
             'km_inicial' => 10000,
             'km_final' => 10500,
@@ -49,9 +49,11 @@ class ViagemServiceTest extends TestCase
 
         $this->assertDatabaseHas('viagens', [
             'id' => $viagem->id,
-            'motorista_id' => $motorista->id,
             'veiculo_id' => $veiculo->id,
+            'km_inicial' => 10000,
         ]);
+
+        $this->assertTrue($viagem->motoristas->contains($motorista));
     }
 
     /**
@@ -65,7 +67,7 @@ class ViagemServiceTest extends TestCase
         $veiculo = Veiculo::factory()->create();
 
         $dados = [
-            'motorista_id' => $motorista->id,
+            'motoristas' => [$motorista->id],
             'veiculo_id' => $veiculo->id,
             'km_inicial' => 20000,
             'km_final' => 19000,
@@ -87,12 +89,13 @@ class ViagemServiceTest extends TestCase
         $veiculo = Veiculo::factory()->create();
 
         $viagem = Viagem::factory()->create([
-            'motorista_id' => $motorista->id,
             'veiculo_id' => $veiculo->id,
+            'km_inicial' => 10000,
         ]);
+        $viagem->motoristas()->attach($motorista->id);
 
         $dadosAtualizados = [
-            'motorista_id' => $motorista->id,
+            'motoristas' => [$motorista->id],
             'veiculo_id' => $veiculo->id,
             'km_inicial' => 12345,
             'km_final' => 12400,
@@ -100,12 +103,14 @@ class ViagemServiceTest extends TestCase
             'data_hora_final' => now()->toDateTimeString(),
         ];
 
-        $this->service->update($viagem->id, $dadosAtualizados);
+        $viagemAtualizada = $this->service->update($viagem->id, $dadosAtualizados);
 
         $this->assertDatabaseHas('viagens', [
             'id' => $viagem->id,
             'km_inicial' => 12345,
         ]);
+
+        $this->assertTrue($viagemAtualizada->motoristas->contains($motorista));
     }
 
     /**
