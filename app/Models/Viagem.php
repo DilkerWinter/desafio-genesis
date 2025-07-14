@@ -31,6 +31,7 @@ class Viagem extends Model
 
     protected $with = ['motoristas', 'veiculo'];
 
+
     public function motoristas()
     {
         return $this->belongsToMany(Motorista::class, 'motorista_viagem', 'viagem_id', 'motorista_id')

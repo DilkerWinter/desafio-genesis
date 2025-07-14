@@ -9,7 +9,7 @@ Entrevista tecnica da Genesis
 Este projeto foi desenvolvido com as seguintes tecnologias:
 
 - [Laravel 12](https://laravel.com/) (PHP 8.3)
-- [PostgreSQL 16](https://www.postgresql.org/)
+- [PostgreSQL 14](https://www.postgresql.org/)
 - [Node.js 24](https://nodejs.org/)
 - [Vue.js](https://vuejs.org/) com [Inertia.js](https://inertiajs.com/)
 - [PHPUnit](https://phpunit.de/) para testes automatizados
@@ -24,8 +24,8 @@ Antes de começar, verifique se você atendeu aos seguintes requisitos:
 
 - PHP >= 8.3
 - Composer
-- Node.js >= 18 (recomendado: 24)
-- PostgreSQL >= 16
+- Node.js >= 18 
+- PostgreSQL >= 14
 - NPM ou Yarn
 - Docker e Docker Compose (para uso do ambiente containerizado)
 
@@ -89,7 +89,7 @@ vendor/bin/phpunit
 O projeto segue a arquitetura padrão Laravel com Inertia.js:
 
 ```
-├── app/
+├── app/            # Código Laravel
 ├── bootstrap/
 ├── database/
 ├── public/
